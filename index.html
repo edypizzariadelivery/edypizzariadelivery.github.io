@@ -3,8 +3,10 @@
     <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Edy Pizzaria - O melhor delivery de pizzas. Confira nosso cardápio e faça seu pedido pelo WhatsApp!">
+    <meta name="keywords" content="Pizzaria, Delivery, Pizza, Edy Pizzaria">
     <title>Edwiges Pizzas - Cardápio Online</title>
-    <link rel="icon" href="caminho/para/favicon.png" type="image/png">
+    <link rel="icon" href="logo.jpg" type="image/png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
@@ -18,13 +20,6 @@
         --light-text-color: #666;
         --white: #ffffff;
     }
-
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
-
     body {
         font-family: 'Roboto', sans-serif;
         background-image: url('https://www.transparenttextures.com/patterns/food.png');
@@ -34,34 +29,31 @@
     }
 
     header {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('pizza-header.jpg');
-        background-size: cover;
-        background-position: center;
-        color: var(--white);
-        text-align: center;
-        padding: 4rem 1rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('lombo.jpg');
+        color: white;
+        text-align: left;
+        padding: 5px;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 0;
+        z-index: 1000;
     }
 
-    h1 {
-        font-size: 3.5rem;
-        margin-bottom: 0.5rem;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-    }
-
-    header p {
-        font-size: 1.2rem;
-        max-width: 600px;
-        margin: 0 auto;
+    .logo {
+        max-width: 80px;
+        margin-bottom: 10px;
     }
 
     .container {
+        padding-top: 100px;
         max-width: 1200px;
         margin: 0 auto;
         padding: 2rem;
     }
 
     .menu-section {
+        padding-top: 15%;
         margin-bottom: 3rem;
     }
 
@@ -127,7 +119,7 @@
         background-color: var(--secondary-color);
         color: var(--white);
         border: none;
-        padding: 0.5rem 1rem;
+        padding: 7px;
         border-radius: 4px;
         cursor: pointer;
         transition: background-color 0.3s ease;
@@ -152,6 +144,7 @@
         box-shadow: -2px 0 10px rgba(0,0,0,0.1);
         padding: 2rem;
         border-left: 1px solid #e0e0e0;
+        z-index: 1001;
     }
 
     #cart.show {
@@ -257,7 +250,7 @@
         border-radius: 25px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         cursor: pointer;
-        z-index: 1000;
+        z-index: 1001;
     }
 
     #cart-toggle i {
@@ -296,8 +289,8 @@
         }
 
         #cart-toggle {
-            top: auto;
-            bottom: 2rem;
+            top: 2%;
+            bottom: auto;
         }
     }
 
@@ -335,8 +328,7 @@
         <p>Item adicionado ao carrinho!</p>
     </div>
     <header>
-        <h1>Edy | Pizzaria Delivery</h1>
-        <p>O Sabor de Bela Vista, agora no conforto da sua casa!</p>
+        <img src="logo.jpg" alt="Logo da Pizzaria" class="logo">
     </header>
 
     <div class="container">
@@ -348,6 +340,15 @@
 
     <div id="cart">
         <h2>Carrinho</h2>
+    
+        <label>Nome:</label>
+        <br>
+        <input type="text" id="nome" placeholder="Seu nome" required>
+        <br><br>
+        <label>Forma de pagamento:</label><br>
+        <label><input type="radio" name="payment" value="Dinheiro"> Dinheiro</label>
+        <label><input type="radio" name="payment" value="Pix"> Pix</label>
+        <label><input type="radio" name="payment" value="Cartão"> Cartão</label><br><br>
         <div id="cart-items"></div>
         <div id="cart-total">Total: R$ 0,00</div>
         <div class="delivery-options">
@@ -358,40 +359,35 @@
                 <input type="radio" name="delivery" value="delivery"> Entrega
             </label>
             <div id="address-input" style="display: none;">
-                <input type="text" id="address" placeholder="Digite seu endereço">
+            <label for="bairro">Bairro:</label>
+            <input type="text" id="bairro" placeholder="Bairro" required>
+            <label for="rua">Rua:</label>
+            <input type="text" id="rua" placeholder="Rua" required>
+            <label for="numero">Número:</label>
+            <input type="text" id="numero" placeholder="Número" required>
             </div>
+            <button id="send-order" onclick="submitOrder()">Enviar Pedido</button>
         </div>
-        <button id="send-order">Enviar Pedido</button>
     </div>
 
     <div id="cart-toggle">
         <i class="fas fa-shopping-cart"></i>
-        <span>Ver Carrinho</span>
+        <span>Carrinho</span>
     </div>
-
-    <footer>
-        <p>&copy; Edy | Pizzaria Delivery</p>
-        <p>Erva Mate C ?? Q 2</p>
-        <div>
-            <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
-            <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
-        </div>
-    </footer>
 
     <script>
         const menu = {
             pizzas: [
-                { name: 'Calabresa', sizes: { M: 34.99, G: 39.99 }, image: 'calabresa.webp', description: 'Deliciosa pizza coberta com fatias de calabresa, cebola e azeitonas.' },
+                { name: 'Calabresa', extra: 3.00, sizes: { M: 34.99, G: 39.99 }, image: 'calabresa.webp', description: 'Deliciosa pizza coberta com fatias de calabresa, cebola e azeitonas.' },
                 { name: 'Carne Seca', sizes: { M: 34.99, G: 39.99 }, image: 'carne-seca.webp', description: 'Saborosa combinação de carne seca desfiada, cebola e catupiry.' },
-                { name: 'Lombo canadense', sizes: { M: 34.99, G: 39.99 }, image: 'lombo.jpg', description: 'Irresistível combinação de Lombo canadense, mussarela, cebola, requeijão cremoso.' },
+                { name: 'Lombo canadense', sizes: { M: 34.99, G: 39.99 }, image: 'lombo.jpg', description: 'Irresistível combinação de Lombo canadense, mussarela, cebola, requeijão cremoso.' },
                 { name: 'Frango com Catupiry', sizes: { M: 38.00, G: 45.00 }, image: 'frango.webp', description: 'Irresistível mistura de frango desfiado com o cremoso catupiry.' },
             ]
         };
-
+    
         const cart = [];
         const deliveryFee = 3.00;
-
+    
         function showNotification() {
             const notification = document.getElementById('notification');
             notification.classList.add('show');
@@ -399,7 +395,7 @@
                 notification.classList.remove('show');
             }, 2000);
         }
-
+    
         function renderMenu(category, containerId) {
             const container = document.getElementById(containerId);
             menu[category].forEach(item => {
@@ -410,32 +406,41 @@
                     <div class="menu-info">
                         <div class="menu-name">${item.name}</div>
                         <div class="menu-description">${item.description}</div>
+                        
+                        <input type="checkbox" id="extra-borda-${item.name}">
+                        <label>Borda recheada (+R$ 3,00)</label>
                         <div class="menu-price">
-                            <button class="size-btn" onclick="addToCart('${item.name}', 'M', ${item.sizes.M})">M - R$ ${item.sizes.M.toFixed(2)}</button>
-                            <button class="size-btn" onclick="addToCart('${item.name}', 'G', ${item.sizes.G})">G - R$ ${item.sizes.G.toFixed(2)}</button>
+                            <button class="size-btn" onclick="addToCart('${item.name}', 'M', ${item.sizes.M}, 'extra-borda-${item.name}')">M - R$ ${item.sizes.M.toFixed(2)}</button>
+                            <button class="size-btn" onclick="addToCart('${item.name}', 'G', ${item.sizes.G}, 'extra-borda-${item.name}')">G - R$ ${item.sizes.G.toFixed(2)}</button>
                         </div>
                     </div>
                 `;
                 container.appendChild(menuItem);
             });
         }
-
-        function addToCart(name, size, price) {
+    
+        function addToCart(name, size, price, extraBordaId) {
             const existingItem = cart.find(item => item.name === name && item.size === size);
+            const extraBorda = document.getElementById(extraBordaId).checked;
+            const extraBordaPrice = extraBorda ? 3.00 : 0;
+            const totalPrice = price + extraBordaPrice;
+    
             if (existingItem) {
                 existingItem.quantity += 1;
+                existingItem.price = totalPrice; // Update price if necessary
+                existingItem.extraBorda = extraBorda;
             } else {
-                cart.push({ name, size, price, quantity: 1 });
+                cart.push({ name, size, price: totalPrice, extraBorda, quantity: 1 });
             }
             updateCart();
             showNotification();
         }
-
+    
         function removeFromCart(index) {
             cart.splice(index, 1);
             updateCart();
         }
-
+    
         function updateItemQuantity(index, change) {
             cart[index].quantity += change;
             if (cart[index].quantity === 0) {
@@ -444,20 +449,20 @@
                 updateCart();
             }
         }
-
+    
         function updateCart() {
             const cartItems = document.getElementById('cart-items');
             const cartTotal = document.getElementById('cart-total');
             
             cartItems.innerHTML = '';
             let total = 0;
-
+    
             cart.forEach((item, index) => {
                 const itemElement = document.createElement('div');
                 itemElement.className = 'cart-item fade-in';
                 itemElement.innerHTML = `
                     <div class="cart-item-info">
-                        <div class="cart-item-name">${item.name} (${item.size})</div>
+                        <div class="cart-item-name">${item.name} (${item.size})${item.extraBorda ? ' com borda recheada' : ''}</div>
                         <div class="cart-item-price">R$ ${(item.price * item.quantity).toFixed(2)}</div>
                     </div>
                     <div class="cart-item-controls">
@@ -472,42 +477,57 @@
                 cartItems.appendChild(itemElement);
                 total += item.price * item.quantity;
             });
-
-            const deliveryOption = document.querySelector('input[name="delivery"]:checked').value;
+    
+            const deliveryOption = document.querySelector('input[name="delivery"]:checked')?.value;
             if (deliveryOption === 'delivery') {
                 total += deliveryFee;
             }
-
+    
             cartTotal.textContent = `Total: R$ ${total.toFixed(2)}`;
         }
-
+    
         function sendOrder() {
-            const deliveryOption = document.querySelector('input[name="delivery"]:checked').value;
-            const address = document.getElementById('address').value;
-
-            let message = 'Olá! Gostaria de fazer o seguinte pedido:\n\n';
+            const nome = document.getElementById('nome').value;
+            const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value;
+            const deliveryType = document.querySelector('input[name="delivery"]:checked')?.value;
+            const bairro = document.getElementById('bairro').value;
+            const rua = document.getElementById('rua').value;
+            const numero = document.getElementById('numero').value;
+    
+            if (!nome || !paymentMethod || !deliveryType) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+    
+            if (deliveryType === 'delivery' && (!bairro || !rua || !numero)) {
+                alert('Por favor, preencha o endereço de entrega.');
+                return;
+            }
+    
+            let message = `Olá! Gostaria de fazer o seguinte pedido:\n\nNome: ${nome}\n\n`;
             cart.forEach(item => {
-                message += `${item.name} (${item.size}) - R$ ${(item.price * item.quantity).toFixed(2)} (Quantidade: ${item.quantity})\n`;
+                message += `${item.name} (${item.size})${item.extraBorda ? ' com borda recheada' : ''} - R$ ${(item.price * item.quantity).toFixed(2)} (Quantidade: ${item.quantity})\n`;
             });
-
+    
             let total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
-            if (deliveryOption === 'delivery') {
+    
+            if (deliveryType === 'delivery') {
                 message += `\nTaxa de entrega: R$ ${deliveryFee.toFixed(2)}`;
                 total += deliveryFee;
-                message += `\nEndereço de entrega: ${address}`;
+                message += `\nEndereço de entrega: \n${bairro}, ${rua}, ${numero}`;
             } else {
                 message += '\nRetirada no local';
             }
-
+    
             message += `\n\nTotal: R$ ${total.toFixed(2)}`;
-
+            message += `\nForma de pagamento: \n${paymentMethod}`;
+    
             const encodedMessage = encodeURIComponent(message);
             window.open(`https://wa.me/5567996375220?text=${encodedMessage}`, '_blank');
         }
-
+    
         document.getElementById('send-order').addEventListener('click', sendOrder);
-
+    
         document.querySelectorAll('input[name="delivery"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 const addressInput = document.getElementById('address-input');
@@ -519,14 +539,14 @@
                 updateCart();
             });
         });
-
+    
         function toggleCart() {
             const cart = document.getElementById('cart');
             cart.classList.toggle('show');
         }
-
+    
         document.getElementById('cart-toggle').addEventListener('click', toggleCart);
-
+    
         renderMenu('pizzas', 'pizza-menu');
     </script>
 </body>
