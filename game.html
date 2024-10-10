@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Edy Pizzaria - O melhor delivery de pizzas. Confira nosso cardápio e faça seu pedido pelo WhatsApp!">
+    <meta name="keywords" content="Pizzaria, Delivery, Pizza, Edy Pizzaria">
+    <title>Edwiges Pizzas - Cardápio Online</title>
+    <link rel="icon" href="logo.jpg" type="image/png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #220202;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .gameboard {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            border-bottom: 15px solid green;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #0088cc, #b6ddf7); 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #restartBtn {
+            z-index: 99;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: none; /* Inicia oculto */
+        }
+        .coco {
+            position: absolute;
+            bottom: 0;
+            width: 80px;
+            display: none; /* Inicia oculto */
+        }
+        .rino {
+            width: 130px;
+            position: absolute;
+            bottom: 0;
+        }
+        .jump {
+            animation: jump 500ms ease-out;
+        }
+        .clouds {
+            position: absolute;
+            width: 500px;
+            animation: clouds-animation 10s infinite linear;
+        }
+        .container {
+            background: rgba(151, 7, 7, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+            text-align: center;
+        }
+        .btn {
+            z-index: 99;
+            background-color: #ff0000;
+            color: #fff;
+            padding: 5px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+            margin-top: 20px; /* Espaçamento entre o texto e o botão */
+            display: block; /* Inicia visível */
+        }
+        .points {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        @keyframes coco-animation {
+            from {
+                right: -80px;
+            }
+            to {
+                right: 100%;
+            }
+        }
+        @keyframes jump {
+            0% {
+                bottom: 0;
+            }
+            40% {
+                bottom: 180px;
+            }
+            50% {
+                bottom: 180px;
+            }
+            60% {
+                bottom: 180px;
+            }
+            100% {
+                bottom: 0;
+            }
+        }
+        @keyframes clouds-animation {
+            from {
+                right: 0;
+            }
+            to {
+                right: 100%;
+            }
+        }
+        
+        /* Estilos adaptativos */
+        @media (max-width: 800px) {
+            .gameboard {
+                height: 600px;
+                border-bottom-width: 12px;
+            }
+            .rino {
+                width: 80px;
+            }
+            .coco {
+                width: 50px;
+            }
+            .clouds {
+                width: 400px;
+            }
+        }
+        @media (max-width: 600px) {
+            .gameboard {
+                height: 400px;
+                border-bottom-width: 10px;
+            }
+            .rino {
+                width: 60px;
+            }
+            .coco {
+                width: 40px;
+            }
+            .clouds {
+                width: 300px;
+            }
+        }
+        @media (max-width: 350px) {
+            .gameboard {
+                height: 300px;
+                border-bottom-width: 8px;
+            }
+            .rino {
+                width: 70px;
+            }
+            .coco {
+                width: 30px;
+            }
+            .clouds {
+                width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gameboard">
+        <div class="points" id="pointsArea">
+            <p>Pontos: <span id="points">0</span></p>
+            <p>Jacarés: <span id="cocosPulados">0</span></p>
+        </div>
+        
+        <div class="container" id="initialInstructions">
+            <p>Clique na tela para pular, dois cliques para pausar/resumir.</p>
+            <button class="btn" id="playBtn">Play</button>
+        </div>
+        <button class="btn" id="restartBtn">Restart</button> <!-- Botão de Restart -->
+        <img src="nuvem.jpg" class="clouds">
+        <img src="rino.gif" class="rino">
+        <img src="coco.jpg" class="coco"> 
+    </div>
+    <audio id="backgroundMusic" src="background.mp3" loop></audio>
+    <audio id="jumpSound" src="jump.mp3"></audio>
+    <audio id="loseSound" src="lose.mp3"></audio>
+    <script>
+        const rino = document.querySelector('.rino');
+        const coco = document.querySelector('.coco');
+        const clouds = document.querySelector('.clouds');
+        const gameboard = document.querySelector('.gameboard');
+        const playBtn = document.getElementById('playBtn');
+        const restartBtn = document.getElementById('restartBtn'); // Seleciona o botão de Restart
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const jumpSound = document.getElementById('jumpSound');
+        const loseSound = document.getElementById('loseSound');
+        const pointsDisplay = document.getElementById('points');
+        const cocosPuladosDisplay = document.getElementById('cocosPulados');
+        const pointsArea = document.getElementById('pointsArea');
+        let gameInterval;
+        let gamePaused = false;
+        let gameStarted = false;
+        let pontos = 0;
+        let cocosPulados = 0;
+
+        const addPoints = () => {
+            pontos += 100;
+            pointsDisplay.textContent = pontos;
+            cocosPulados++;
+            cocosPuladosDisplay.textContent = cocosPulados;
+
+            if (cocosPulados === 10) {
+                endGame();
+            }
+        };
+
+        const endGame = () => {
+            clearInterval(gameInterval);
+            resetGame();
+
+            // Mostrar mensagem de fim de jogo ou passagem de fase
+            pointsArea.innerHTML += '<p>Parabéns! Você passou de fase!</p>';
+        };
+
+        const jump = () => {
+            if (!rino.classList.contains('jump') && !gamePaused && gameStarted) {
+                rino.classList.add('jump');
+                jumpSound.currentTime = 0; // Reinicia o áudio se já estiver em execução
+                jumpSound.play();
+
+                setTimeout(() => {
+                    rino.classList.remove('jump');
+                }, 500); // Duração da animação de pulo
+
+                addPoints(); // Chama a função para adicionar pontos ao pular o coco
+            }
+        };
+
+        const pauseResumeGame = () => {
+            if (!gamePaused && gameStarted) {
+                gamePaused = true;
+                backgroundMusic.pause();
+                clouds.style.animationPlayState = 'paused';
+                coco.style.animationPlayState = 'paused';
+                clearInterval(gameInterval);
+                playBtn.textContent = 'Resume';
+            } else if (gamePaused && gameStarted) {
+                gamePaused = false;
+                backgroundMusic.play();
+                clouds.style.animationPlayState = 'running';
+                coco.style.animationPlayState = 'running';
+                startGame();
+                playBtn.textContent = 'Restart';
+            }
+        };
+
+        const startGame = () => {
+            gameStarted = true;
+            document.getElementById('initialInstructions').style.display = 'none';
+            playBtn.style.display = 'none';
+            restartBtn.style.display = 'block'; // Mostra o botão de Restart ao iniciar o jogo
+            gameboard.style.display = 'block';
+            coco.style.display = 'block'; // Mostra o coco
+            coco.style.animation = 'coco-animation 1.5s infinite linear';
+            rino.src = 'rino.gif';
+            rino.style.width = '150px';
+            rino.style.bottom = '0';
+
+            gameboard.addEventListener('click', () => {
+                jump();
+            });
+
+            gameboard.addEventListener('dblclick', () => {
+                pauseResumeGame();
+            });
+
+            backgroundMusic.play();
+
+            gameInterval = setInterval(() => {
+                const cocoPosition = coco.getBoundingClientRect().left;
+                const rinoPosition = parseFloat(window.getComputedStyle(rino).bottom.replace('px', ''));
+
+                if (cocoPosition < 110 && cocoPosition > 0 && rinoPosition < 80) {
+                    coco.style.animation = 'none';
+                    coco.style.left = `${cocoPosition}px`;
+
+                    rino.style.animation = 'none';
+                    rino.style.bottom = `${rinoPosition}px`;
+
+                    rino.src = "cocozin.jpg";
+                    rino.style.width = '100px';
+                    rino.style.marginLeft = '50px';
+
+                    clearInterval(gameInterval);
+                    restartBtn.style.display = 'block'; // Mostra o botão de Restart ao final do jogo
+                    loseSound.currentTime = 0;
+                    loseSound.play();
+
+                    backgroundMusic.pause();
+                    backgroundMusic.currentTime = 0;
+                }
+            }, 10);
+        };
+
+        const resetGame = () => {
+            gameStarted = false;
+            clearInterval(gameInterval);
+            coco.style.left = '';
+            coco.style.display = 'none'; // Oculta o coco
+            coco.style.animation = '';
+            rino.style.bottom = '0';
+            rino.style.animation = '';
+            rino.src = 'rino.gif';
+            rino.style.width = '150px';
+            rino.style.marginLeft = '';
+            backgroundMusic.pause();
+            backgroundMusic.currentTime = 0;
+            document.getElementById('initialInstructions').style.display = 'flex';
+            playBtn.textContent = 'Play'; // Reinicia o texto do botão "Play"
+            playBtn.style.display = 'block';
+            restartBtn.style.display = 'none'; // Oculta o botão de Restart ao reiniciar o jogo
+            pontos = 0;
+            cocosPulados = 0;
+            pointsDisplay.textContent = pontos;
+            cocosPuladosDisplay.textContent = cocosPulados;
+        };
+
+        playBtn.addEventListener('click', () => {
+            if (playBtn.textContent === 'Restart') {
+                resetGame();
+                startGame(); // Inicia o jogo diretamente ao clicar em Restart
+            } else if (playBtn.textContent === 'Play') {
+                startGame();
+            } else if (playBtn.textContent === 'Resume') {
+                pauseResumeGame();
+            }
+        });
+
+        restartBtn.addEventListener('click', () => {
+            resetGame();
+            startGame(); // Inicia o jogo diretamente ao clicar em Restart
+        });
+    </script>
+</body>
+</html>
