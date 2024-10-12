@@ -1,65 +1,109 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-    <head>
+<head>
+    <!-- Metadados básicos -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Edy Pizzaria - O melhor delivery de pizzas. Confira nosso cardápio e faça seu pedido pelo WhatsApp!">
     <meta name="keywords" content="Pizzaria, Delivery, Pizza, Edy Pizzaria">
-    <title>Edwiges Pizzas - game</title>
-    <link rel="icon" href="logo.jpg" type="image/png"> 
+    
+    <!-- Título da página -->
+    <title>Edwiges Pizzas - Game</title>
+    
+    <!-- Ícone da página -->
+    <link rel="icon" href="https://edypizzariadelivery.github.io/logo.jpg" type="image/png"> 
+    
+    <!-- Estilos CSS -->
     <style>
+        /* Reset básico para remover margens e paddings padrão */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+        
+        /* Estilo do corpo da página */
         body {
-            background: #220202;
+            background: #220202; /* Cor de fundo escura */
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            flex-direction: column;
+            height: 100vh; /* Altura total da viewport */
+            flex-direction: column; /* Organização em coluna */
         }
+        
+        /* Overlay para orientação */
+        #orientationOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: none; /* Inicialmente oculto */
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+            font-size: 1.5em;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        /* Estilo do tabuleiro do jogo */
         .gameboard {
             position: relative;
             width: 100%;
             height: 500px;
-            border-bottom: 15px solid green;
-            overflow: hidden;
-            background: linear-gradient(to bottom, #0088cc, #b6ddf7); 
+            border-bottom: 15px solid green; /* Linha de chão */
+            overflow: hidden; /* Oculta conteúdos que ultrapassam os limites */
+            background: linear-gradient(to bottom, #0088cc, #b6ddf7); /* Fundo com gradiente */
             display: flex;
             justify-content: center;
             align-items: center;
         }
+        
+        /* Botão de reinício, inicialmente oculto */
         #restartBtn {
             z-index: 99;
             position: absolute;
             top: 20px;
             right: 20px;
-            display: none; /* Inicia oculto */
+            display: none;
         }
+        
+        /* Imagem do coco, inicialmente oculto */
         .coco {
             position: absolute;
             bottom: 0;
             width: 80px;
-            display: none; /* Inicia oculto */
+            display: none;
         }
+        
+        /* Imagem do rinoceronte */
         .rino {
             width: 130px;
             position: absolute;
             bottom: 0;
         }
+        
+        /* Classe para animação de pulo */
         .jump {
             animation: jump 500ms ease-out;
         }
+        
+        /* Imagem das nuvens com animação contínua */
         .clouds {
             position: absolute;
             width: 500px;
             animation: clouds-animation 10s infinite linear;
         }
+        
+        /* Container das instruções iniciais */
         .container {
-            background: rgba(151, 7, 7, 0.6);
+            background: rgba(151, 7, 7, 0.6); /* Fundo semi-transparente */
             padding: 20px;
             border-radius: 10px;
             display: flex;
@@ -68,36 +112,44 @@
             color: #fff;
             text-align: center;
         }
+        
+        /* Estilo dos botões */
         .btn {
             z-index: 99;
-            background-color: #ff0000;
-            color: #fff;
+            background-color: #ff0000; /* Cor de fundo vermelha */
+            color: #fff; /* Texto branco */
             padding: 5px 30px;
             text-decoration: none;
             border-radius: 5px;
             font-size: 18px;
-            margin-top: 20px; /* Espaçamento entre o texto e o botão */
-            display: block; /* Inicia visível */
+            margin-top: 20px; /* Espaçamento superior */
+            display: block; /* Exibido como bloco */
+            cursor: pointer;
         }
+        
+        /* Área de exibição dos pontos */
         .points {
             position: absolute;
             top: 20px;
             left: 20px;
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: rgba(255, 255, 255, 0.7); /* Fundo semi-transparente */
             padding: 10px;
             border-radius: 5px;
             text-align: center;
             font-size: 18px;
         }
 
+        /* Animação para o movimento do coco */
         @keyframes coco-animation {
             from {
-                right: -80px;
+                right: -80px; /* Inicia fora da tela à direita */
             }
             to {
-                right: 100%;
+                right: 100%; /* Move até o final da tela */
             }
         }
+
+        /* Animação de pulo do rinoceronte */
         @keyframes jump {
             0% {
                 bottom: 0;
@@ -115,16 +167,18 @@
                 bottom: 0;
             }
         }
+
+        /* Animação contínua das nuvens */
         @keyframes clouds-animation {
             from {
-                right: -80px;
+                right: -80px; /* Inicia fora da tela à direita */
             }
             to {
-                right: 100%;
+                right: 100%; /* Move até o final da tela */
             }
         }
         
-        /* Estilos adaptativos */
+        /* Estilos responsivos para diferentes tamanhos de tela */
         @media (max-width: 800px) {
             .gameboard {
                 height: 600px;
@@ -170,183 +224,298 @@
                 width: 200px;
             }
         }
+
+        /* Ajustes para modo paisagem */
+        @media (orientation: landscape) {
+            /* Ajustes específicos para paisagem, se necessário */
+        }
     </style>
 </head>
 <body>
+    <!-- Overlay para orientação -->
+    <div id="orientationOverlay">
+        <p>Por favor, gire seu dispositivo para o modo paisagem para uma melhor experiência.</p>
+    </div>
+
+    <!-- Tabuleiro do jogo -->
     <div class="gameboard">
+        <!-- Área de exibição dos pontos e jacarés pulados -->
         <div class="points" id="pointsArea">
             <p>Pontos: <span id="points">0</span></p>
             <p>Jacarés: <span id="cocosPulados">0</span></p>
         </div>
         
+        <!-- Container com instruções iniciais e botão de play -->
         <div class="container" id="initialInstructions">
             <p>Clique na tela para pular, dois cliques para pausar/resumir.</p>
             <button class="btn" id="playBtn">Play</button>
         </div>
-        <button class="btn" id="restartBtn">Restart</button> <!-- Botão de Restart -->
-        <img src="nuvem.jpg" class="clouds">
-        <img src="rino.gif" class="rino">
-        <img src="coco.gif" class="coco"> 
+        
+        <!-- Botão de reinício, inicialmente oculto -->
+        <button class="btn" id="restartBtn">Restart</button>
+        
+        <!-- Imagens das nuvens, rinoceronte e coco -->
+        <img src="https://edypizzariadelivery.github.io/nuvem.jpg" class="clouds" alt="Nuvens">
+        <img src="https://edypizzariadelivery.github.io/rino.gif" class="rino" alt="Rinoceronte">
+        <img src="https://edypizzariadelivery.github.io/coco.gif" class="coco" alt="Coco"> 
     </div>
-    <audio id="backgroundMusic" src="background.mp3" loop></audio>
-    <audio id="jumpSound" src="jump.mp3"></audio>
-    <audio id="loseSound" src="lose.mp3"></audio>
+    
+    <!-- Áudios do jogo -->
+    <audio id="backgroundMusic" src="https://edypizzariadelivery.github.io/background.mp3" loop></audio>
+    <audio id="jumpSound" src="https://edypizzariadelivery.github.io/jump.mp3"></audio>
+    <audio id="loseSound" src="https://edypizzariadelivery.github.io/lose.mp3"></audio>
+    
+    <!-- Script JavaScript para a lógica do jogo -->
     <script>
+        // Seleção dos elementos do DOM
         const rino = document.querySelector('.rino');
         const coco = document.querySelector('.coco');
         const clouds = document.querySelector('.clouds');
         const gameboard = document.querySelector('.gameboard');
         const playBtn = document.getElementById('playBtn');
-        const restartBtn = document.getElementById('restartBtn'); // Seleciona o botão de Restart
+        const restartBtn = document.getElementById('restartBtn');
         const backgroundMusic = document.getElementById('backgroundMusic');
         const jumpSound = document.getElementById('jumpSound');
         const loseSound = document.getElementById('loseSound');
         const pointsDisplay = document.getElementById('points');
         const cocosPuladosDisplay = document.getElementById('cocosPulados');
         const pointsArea = document.getElementById('pointsArea');
+        const orientationOverlay = document.getElementById('orientationOverlay');
+        
+        // Variáveis de controle do jogo
         let gameInterval;
         let gamePaused = false;
         let gameStarted = false;
         let pontos = 0;
         let cocosPulados = 0;
 
+        /**
+         * Função para adicionar pontos e contar jacarés pulados
+         */
         const addPoints = () => {
-            pontos += 100;
-            pointsDisplay.textContent = pontos;
-            cocosPulados++;
-            cocosPuladosDisplay.textContent = cocosPulados;
+            pontos += 100; // Incrementa pontos
+            pointsDisplay.textContent = pontos; // Atualiza a exibição dos pontos
+            cocosPulados++; // Incrementa contador de jacarés pulados
+            cocosPuladosDisplay.textContent = cocosPulados; // Atualiza a exibição
 
+            // Verifica se o jogador pulou 10 jacarés
             if (cocosPulados === 10) {
-                endGame();
+                endGame(); // Finaliza o jogo
             }
         };
 
+        /**
+         * Função para encerrar o jogo quando uma condição é atendida
+         */
         const endGame = () => {
-            clearInterval(gameInterval);
-            resetGame();
+            clearInterval(gameInterval); // Limpa o intervalo do jogo
+            resetGame(); // Reseta o jogo
 
-            // Mostrar mensagem de fim de jogo ou passagem de fase
+            // Exibe uma mensagem de passagem de fase
             pointsArea.innerHTML += '<p>Parabéns! Você passou de fase!</p>';
         };
 
+        /**
+         * Função para realizar o pulo do rinoceronte
+         */
         const jump = () => {
+            // Verifica se o rinoceronte não está pulando, o jogo não está pausado e já iniciou
             if (!rino.classList.contains('jump') && !gamePaused && gameStarted) {
-                rino.classList.add('jump');
-                jumpSound.currentTime = 0; // Reinicia o áudio se já estiver em execução
-                jumpSound.play();
+                rino.classList.add('jump'); // Adiciona a classe de pulo
+                jumpSound.currentTime = 0; // Reinicia o áudio de pulo
+                jumpSound.play(); // Toca o som de pulo
 
+                // Remove a classe de pulo após a animação
                 setTimeout(() => {
                     rino.classList.remove('jump');
                 }, 500); // Duração da animação de pulo
 
-                addPoints(); // Chama a função para adicionar pontos ao pular o coco
+                addPoints(); // Adiciona pontos ao pular o coco
             }
         };
 
+        /**
+         * Função para pausar ou retomar o jogo
+         */
         const pauseResumeGame = () => {
             if (!gamePaused && gameStarted) {
+                // Pausar o jogo
                 gamePaused = true;
-                backgroundMusic.pause();
-                clouds.style.animationPlayState = 'paused';
-                coco.style.animationPlayState = 'paused';
-                clearInterval(gameInterval);
-                playBtn.textContent = 'Resume';
+                backgroundMusic.pause(); // Pausa a música de fundo
+                clouds.style.animationPlayState = 'paused'; // Pausa a animação das nuvens
+                coco.style.animationPlayState = 'paused'; // Pausa a animação do coco
+                clearInterval(gameInterval); // Limpa o intervalo do jogo
+                playBtn.textContent = 'Resume'; // Altera o texto do botão
             } else if (gamePaused && gameStarted) {
+                // Retomar o jogo
                 gamePaused = false;
-                backgroundMusic.play();
-                clouds.style.animationPlayState = 'running';
-                coco.style.animationPlayState = 'running';
-                startGame();
-                playBtn.textContent = 'Restart';
+                backgroundMusic.play(); // Reproduz a música de fundo
+                clouds.style.animationPlayState = 'running'; // Retoma a animação das nuvens
+                coco.style.animationPlayState = 'running'; // Retoma a animação do coco
+                startGame(); // Reinicia o intervalo do jogo
+                playBtn.textContent = 'Restart'; // Altera o texto do botão
             }
         };
 
-        const startGame = () => {
-            gameStarted = true;
-            document.getElementById('initialInstructions').style.display = 'none';
-            playBtn.style.display = 'none';
-            restartBtn.style.display = 'block'; // Mostra o botão de Restart ao iniciar o jogo
-            gameboard.style.display = 'block';
-            coco.style.display = 'block'; // Mostra o coco
-            coco.style.animation = 'coco-animation 1.5s infinite linear';
-            rino.src = 'rino.gif';
-            rino.style.width = '150px';
-            rino.style.bottom = '0';
+        /**
+         * Função para solicitar tela cheia
+         */
+        const requestFullscreen = () => {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                return elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) { // Firefox
+                return elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) { // Chrome, Safari e Opera
+                return elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { // IE/Edge
+                return elem.msRequestFullscreen();
+            }
+        };
 
+        /**
+         * Função para travar a orientação para paisagem
+         */
+        const lockOrientation = () => {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(function(error) {
+                    console.warn('Não foi possível travar a orientação:', error);
+                    checkOrientation();
+                });
+            } else {
+                checkOrientation();
+            }
+        };
+
+        /**
+         * Função para verificar a orientação e mostrar o overlay se necessário
+         */
+        const checkOrientation = () => {
+            if (window.innerWidth < window.innerHeight) {
+                orientationOverlay.style.display = 'flex';
+            } else {
+                orientationOverlay.style.display = 'none';
+            }
+        };
+
+        // Event listener para mudanças na orientação
+        window.addEventListener('resize', checkOrientation);
+        window.addEventListener('orientationchange', checkOrientation);
+
+        /**
+         * Função para iniciar o jogo
+         */
+        const startGame = () => {
+            // Solicita tela cheia
+            requestFullscreen().catch(err => {
+                console.warn(`Erro ao tentar entrar em tela cheia: ${err.message} (${err.name})`);
+            });
+
+            // Tenta travar a orientação para paisagem
+            lockOrientation();
+
+            gameStarted = true; // Define que o jogo iniciou
+            document.getElementById('initialInstructions').style.display = 'none'; // Oculta as instruções iniciais
+            playBtn.style.display = 'none'; // Oculta o botão de play
+            restartBtn.style.display = 'block'; // Mostra o botão de reinício
+            gameboard.style.display = 'block'; // Exibe o tabuleiro do jogo
+            coco.style.display = 'block'; // Exibe o coco
+            coco.style.animation = 'coco-animation 1.5s infinite linear'; // Inicia a animação do coco
+            rino.src = 'https://edypizzariadelivery.github.io/rino.gif'; // Define a imagem do rinoceronte
+            rino.style.width = '150px'; // Define a largura do rinoceronte
+            rino.style.bottom = '0'; // Posiciona o rinoceronte na base
+
+            // Adiciona evento de clique para pular
             gameboard.addEventListener('click', () => {
                 jump();
             });
 
+            // Adiciona evento de duplo clique para pausar ou retomar
             gameboard.addEventListener('dblclick', () => {
                 pauseResumeGame();
             });
 
-            backgroundMusic.play();
+            backgroundMusic.play(); // Inicia a música de fundo
 
+            // Intervalo para verificar colisões
             gameInterval = setInterval(() => {
-                const cocoPosition = coco.getBoundingClientRect().left;
-                const rinoPosition = parseFloat(window.getComputedStyle(rino).bottom.replace('px', ''));
+                const cocoPosition = coco.getBoundingClientRect().left; // Posição atual do coco
+                const rinoPosition = parseFloat(window.getComputedStyle(rino).bottom.replace('px', '')); // Posição atual do rinoceronte
 
+                // Verifica se houve colisão entre o rinoceronte e o coco
                 if (cocoPosition < 110 && cocoPosition > 0 && rinoPosition < 80) {
-                    coco.style.animation = 'none';
-                    coco.style.left = `${cocoPosition}px`;
+                    coco.style.animation = 'none'; // Para a animação do coco
+                    coco.style.left = `${cocoPosition}px`; // Mantém a posição atual do coco
 
-                    rino.style.animation = 'none';
-                    rino.style.bottom = `${rinoPosition}px`;
+                    rino.style.animation = 'none'; // Para a animação do rinoceronte
+                    rino.style.bottom = `${rinoPosition}px`; // Mantém a posição atual do rinoceronte
 
-                    rino.src = "cocozin.jpg";
+                    // Altera a imagem e estilo do rinoceronte para indicar a colisão
+                    rino.src = "https://edypizzariadelivery.github.io/cocozin.jpg";
                     rino.style.width = '100px';
                     rino.style.marginLeft = '50px';
 
-                    clearInterval(gameInterval);
-                    restartBtn.style.display = 'block'; // Mostra o botão de Restart ao final do jogo
-                    loseSound.currentTime = 0;
-                    loseSound.play();
+                    clearInterval(gameInterval); // Limpa o intervalo do jogo
+                    restartBtn.style.display = 'block'; // Mostra o botão de reinício
+                    loseSound.currentTime = 0; // Reinicia o som de derrota
+                    loseSound.play(); // Toca o som de derrota
 
-                    backgroundMusic.pause();
-                    backgroundMusic.currentTime = 0;
+                    backgroundMusic.pause(); // Pausa a música de fundo
+                    backgroundMusic.currentTime = 0; // Reseta a música de fundo
                 }
-            }, 10);
+            }, 10); // Verifica a cada 10 milissegundos
         };
 
+        /**
+         * Função para resetar o jogo para o estado inicial
+         */
         const resetGame = () => {
-            gameStarted = false;
-            clearInterval(gameInterval);
-            coco.style.left = '';
+            gameStarted = false; // Define que o jogo não está iniciado
+            clearInterval(gameInterval); // Limpa o intervalo do jogo
+            coco.style.left = ''; // Reseta a posição do coco
             coco.style.display = 'none'; // Oculta o coco
-            coco.style.animation = '';
-            rino.style.bottom = '0';
-            rino.style.animation = '';
-            rino.src = 'rino.gif';
-            rino.style.width = '150px';
-            rino.style.marginLeft = '';
-            backgroundMusic.pause();
-            backgroundMusic.currentTime = 0;
-            document.getElementById('initialInstructions').style.display = 'flex';
-            playBtn.textContent = 'Play'; // Reinicia o texto do botão "Play"
-            playBtn.style.display = 'block';
-            restartBtn.style.display = 'none'; // Oculta o botão de Restart ao reiniciar o jogo
-            pontos = 0;
-            cocosPulados = 0;
-            pointsDisplay.textContent = pontos;
-            cocosPuladosDisplay.textContent = cocosPulados;
+            coco.style.animation = ''; // Remove a animação do coco
+            rino.style.bottom = '0'; // Reseta a posição do rinoceronte
+            rino.style.animation = ''; // Remove a animação do rinoceronte
+            rino.src = 'https://edypizzariadelivery.github.io/rino.gif'; // Reseta a imagem do rinoceronte
+            rino.style.width = '150px'; // Reseta a largura do rinoceronte
+            rino.style.marginLeft = ''; // Reseta a margem esquerda do rinoceronte
+            backgroundMusic.pause(); // Pausa a música de fundo
+            backgroundMusic.currentTime = 0; // Reseta a música de fundo
+            document.getElementById('initialInstructions').style.display = 'flex'; // Mostra as instruções iniciais
+            playBtn.textContent = 'Play'; // Reseta o texto do botão de play
+            playBtn.style.display = 'block'; // Mostra o botão de play
+            restartBtn.style.display = 'none'; // Oculta o botão de reinício
+            pontos = 0; // Reseta os pontos
+            cocosPulados = 0; // Reseta os jacarés pulados
+            pointsDisplay.textContent = pontos; // Atualiza a exibição dos pontos
+            cocosPuladosDisplay.textContent = cocosPulados; // Atualiza a exibição dos jacarés pulados
         };
 
+        /**
+         * Evento de clique no botão de play/reinício
+         */
         playBtn.addEventListener('click', () => {
             if (playBtn.textContent === 'Restart') {
-                resetGame();
-                startGame(); // Inicia o jogo diretamente ao clicar em Restart
+                resetGame(); // Reseta o jogo
+                startGame(); // Inicia o jogo novamente
             } else if (playBtn.textContent === 'Play') {
-                startGame();
+                startGame(); // Inicia o jogo
             } else if (playBtn.textContent === 'Resume') {
-                pauseResumeGame();
+                pauseResumeGame(); // Retoma o jogo
             }
         });
 
+        /**
+         * Evento de clique no botão de reinício
+         */
         restartBtn.addEventListener('click', () => {
-            resetGame();
-            startGame(); // Inicia o jogo diretamente ao clicar em Restart
+            resetGame(); // Reseta o jogo
+            startGame(); // Inicia o jogo novamente
         });
+
+        // Verifica a orientação ao carregar a página
+        window.addEventListener('load', checkOrientation);
     </script>
 </body>
 </html>
