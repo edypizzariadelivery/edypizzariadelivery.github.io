@@ -1,691 +1,521 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-    <head>
+<head>
+    <!-- Metadados básicos -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Edy Pizzaria - O melhor delivery de pizzas. Confira nosso cardápio e faça seu pedido pelo WhatsApp!">
     <meta name="keywords" content="Pizzaria, Delivery, Pizza, Edy Pizzaria">
-    <title>Edwiges Pizzas - Cardápio Online</title>
-    <link rel="icon" href="https://edypizzariadelivery.github.io/logo.jpg" type="image/png">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    
+    <!-- Título da página -->
+    <title>Edwiges Pizzas - Game</title>
+    
+    <!-- Ícone da página -->
+    <link rel="icon" href="https://edypizzariadelivery.github.io/logo.jpg" type="image/png"> 
+    
+    <!-- Estilos CSS -->
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-
-    :root {
-        --primary-color: #d32f2f;
-        --secondary-color: #4caf50;
-        --background-color: #f5f5f5;
-        --text-color: #333;
-        --light-text-color: #666;
-        --white: #ffffff;
-    }
-    body {
-        font-family: 'Roboto', sans-serif;
-        background-image: url('https://www.transparenttextures.com/patterns/food.png');
-        background-color: #f5f5f5;
-        color: var(--text-color);
-        line-height: 1.6;
-    }
-        #splash-screen {
+        /* Reset básico para remover margens e paddings padrão */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* Estilo do corpo da página */
+        body {
+            background: #220202; /* Cor de fundo escura */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Altura total da viewport */
+            flex-direction: column; /* Organização em coluna */
+        }
+        
+        /* Overlay para orientação */
+        #orientationOverlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #f5f5f5;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: none; /* Inicialmente oculto */
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+            font-size: 1.5em;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        /* Estilo do tabuleiro do jogo */
+        .gameboard {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            border-bottom: 15px solid green; /* Linha de chão */
+            overflow: hidden; /* Oculta conteúdos que ultrapassam os limites */
+            background: linear-gradient(to bottom, #0088cc, #b6ddf7); /* Fundo com gradiente */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Botão de reinício, inicialmente oculto */
+        #restartBtn {
+            z-index: 99;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: none;
+        }
+        
+        /* Imagem do coco, inicialmente oculto */
+        .coco {
+            position: absolute;
+            bottom: 0;
+            width: 80px;
+            display: none;
+        }
+        
+        /* Imagem do rinoceronte */
+        .rino {
+            width: 130px;
+            position: absolute;
+            bottom: 0;
+        }
+        
+        /* Classe para animação de pulo */
+        .jump {
+            animation: jump 500ms ease-out;
+        }
+        
+        /* Imagem das nuvens com animação contínua */
+        .clouds {
+            position: absolute;
+            width: 500px;
+            animation: clouds-animation 10s infinite linear;
+        }
+        
+        /* Container das instruções iniciais */
+        .container {
+            background: rgba(151, 7, 7, 0.6); /* Fundo semi-transparente */
+            padding: 20px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            z-index: 1002;
+            color: #fff;
+            text-align: center;
         }
-        #logo {
-            width: 200px;
-            height: auto;
-            margin-bottom: 20px;
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 30px;
-            color: #d32f2f;
-        }
+        
+        /* Estilo dos botões */
         .btn {
-            padding: 10px 20px;
-            font-size: 18px;
-            margin: 10px;
-            cursor: pointer;
-            background-color: #d32f2f;
-            color: white;
-            border: none;
+            z-index: 99;
+            background-color: #ff0000; /* Cor de fundo vermelha */
+            color: #fff; /* Texto branco */
+            padding: 5px 30px;
+            text-decoration: none;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            font-size: 18px;
+            margin-top: 20px; /* Espaçamento superior */
+            display: block; /* Exibido como bloco */
+            cursor: pointer;
         }
-        .btn:hover {
-            background-color: #b71c1c;
-        }
-        #video-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 2000;
-        }
-        #ad-video {
-            max-width: 80%;
-            max-height: 80%;
-        }
-        #main-content {
-            display: none;
+        
+        /* Área de exibição dos pontos */
+        .points {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.7); /* Fundo semi-transparente */
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 18px;
         }
 
-    header {
-        background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('lombo.jpg');
-        color: white;
-        text-align: left;
-        padding: 5px;
-        position: fixed;
-        width: 100%;
-        top: 0;
-        left: 0;
-        z-index: 1000;
-    }
-
-    .logo {
-        max-width: 80px;
-        margin-bottom: 10px;
-    }
-
-    .container {
-        padding-top: 100px;
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-    }
-
-    .menu-section {
-        padding-top: 15%;
-        margin-bottom: 3rem;
-    }
-
-    h2 {
-        font-size: 2rem;
-        margin-bottom: 1rem;
-        color: var(--primary-color);
-    }
-
-    .menu-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 2rem;
-    }
-
-    .menu-item {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        background-color: var(--white);
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
-        border: 1px solid #e0e0e0;
-    }
-
-    .menu-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-    }
-
-    .menu-img {
-        width: 100%;
-        height: 200px;
-        object-fit: cover;
-        transition: transform 0.3s ease;
-    }
-
-    .menu-item:hover .menu-img {
-        transform: scale(1.05);
-    }
-
-    .menu-info {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        padding: 1.5rem;
-    }
-
-    .menu-name {
-        font-size: 1.2rem;
-        font-weight: bold;
-        margin-bottom: 0.5rem;
-    }
-
-    .menu-description {
-        font-size: 0.9rem;
-        color: var(--light-text-color);
-        margin-bottom: 0.5rem;
-    }
-
-    .menu-price {
-        font-weight: bold;
-        color: var(--primary-color);
-    }
-
-    .borda-recheada-option {
-        margin-top: auto;
-        margin-bottom: 10px;
-        font-size: 0.9rem;
-    }
-
-    .size-buttons-wrapper {
-        display: flex;
-        justify-content: space-between;
-    }
-
-    .size-btn {
-        flex: 1;
-        margin: 0 5px;
-        background-color: var(--secondary-color);
-        color: var(--white);
-        border: none;
-        padding: 7px;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-        font-weight: bold;
-    }
-
-    .size-btn:hover {
-        background-color: #45a049;
-    }
-
-    #cart {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        height: 100vh;
-        max-width: 350px;
-        width: 100%;
-        overflow-y: auto;
-        transition: right 0.3s ease;
-        background-color: var(--white);
-        box-shadow: -2px 0 10px rgba(0,0,0,0.1);
-        padding: 2rem;
-        border-left: 1px solid #e0e0e0;
-        z-index: 1001;
-    }
-
-    #cart.show {
-        right: 0;
-    }
-
-    #cart h2 {
-        color: var(--primary-color);
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-        border-bottom: 2px solid var(--primary-color);
-        padding-bottom: 0.5rem;
-    }
-
-    .cart-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid #e0e0e0;
-    }
-
-    .cart-item-info {
-        flex-grow: 1;
-    }
-
-    .cart-item-name {
-        font-weight: bold;
-    }
-
-    .cart-item-price {
-        color: var(--primary-color);
-    }
-
-    .cart-item-controls {
-        display: flex;
-        align-items: center;
-    }
-
-    .cart-item-quantity {
-        margin: 0 0.5rem;
-    }
-
-    .quantity-btn {
-        background-color: var(--secondary-color);
-        color: var(--white);
-        border: none;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.8rem;
-    }
-
-    .remove-item {
-        background-color: #ff5252;
-        color: var(--white);
-        border: none;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.8rem;
-        margin-left: 0.5rem;
-    }
-
-    .delivery-options {
-        margin-top: 1rem;
-        background-color: #f5f5f5;
-        padding: 1rem;
-        border-radius: 8px;
-    }
-
-    .delivery-options label {
-        display: block;
-        margin-bottom: 0.5rem;
-    }
-
-    #address {
-        width: 100%;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-    }
-
-    footer {
-        background-color: var(--primary-color);
-        color: var(--white);
-        text-align: center;
-        padding: 2rem;
-        margin-top: 3rem;
-    }
-
-    #cart-toggle {
-        display: flex;
-        align-items: center;
-        position: fixed;
-        top: 2rem;
-        right: 2rem;
-        background-color: var(--primary-color);
-        color: var(--white);
-        padding: 0.5rem 1rem;
-        border-radius: 25px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        cursor: pointer;
-        z-index: 1001;
-    }
-
-    #cart-toggle i {
-        margin-right: 0.5rem;
-    }
-
-    .notification {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: var(--secondary-color);
-        color: var(--white);
-        padding: 10px 20px;
-        border-radius: 5px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        z-index: 1001;
-        display: none;
-        transition: opacity 0.3s ease-in-out;
-        opacity: 0;
-    }
-
-    .notification.show {
-        display: block;
-        opacity: 1;
-    }
-
-    @media (max-width: 768px) {
-        .menu-grid {
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        /* Animação para o movimento do coco */
+        @keyframes coco-animation {
+            from {
+                right: -80px; /* Inicia fora da tela à direita */
+            }
+            to {
+                right: 100%; /* Move até o final da tela */
+            }
         }
 
-        #cart {
-            max-width: 100%;
-            width: 80%;
+        /* Animação de pulo do rinoceronte */
+        @keyframes jump {
+            0% {
+                bottom: 0;
+            }
+            40% {
+                bottom: 180px;
+            }
+            50% {
+                bottom: 180px;
+            }
+            60% {
+                bottom: 180px;
+            }
+            100% {
+                bottom: 0;
+            }
         }
 
-        #cart-toggle {
-            top: 2%;
-            bottom: auto;
+        /* Animação contínua das nuvens */
+        @keyframes clouds-animation {
+            from {
+                right: -80px; /* Inicia fora da tela à direita */
+            }
+            to {
+                right: 100%; /* Move até o final da tela */
+            }
         }
-    }
+        
+        /* Estilos responsivos para diferentes tamanhos de tela */
+        @media (max-width: 800px) {
+            .gameboard {
+                height: 600px;
+                border-bottom-width: 12px;
+            }
+            .rino {
+                width: 80px;
+            }
+            .coco {
+                width: 50px;
+            }
+            .clouds {
+                width: 400px;
+            }
+        }
+        @media (max-width: 600px) {
+            .gameboard {
+                height: 400px;
+                border-bottom-width: 10px;
+            }
+            .rino {
+                width: 60px;
+            }
+            .coco {
+                width: 40px;
+            }
+            .clouds {
+                width: 300px;
+            }
+        }
+        @media (max-width: 350px) {
+            .gameboard {
+                height: 300px;
+                border-bottom-width: 8px;
+            }
+            .rino {
+                width: 70px;
+            }
+            .coco {
+                width: 30px;
+            }
+            .clouds {
+                width: 200px;
+            }
+        }
 
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
-    }
-
-    .fade-in {
-        animation: fadeIn 0.3s ease;
-    }
-
-    #send-order {
-        display: block;
-        width: 100%;
-        padding: 1rem;
-        background-color: var(--secondary-color);
-        color: var(--white);
-        border: none;
-        border-radius: 4px;
-        font-size: 1rem;
-        font-weight: bold;
-        cursor: pointer;
-        margin-top: 1rem;
-        transition: background-color 0.3s ease;
-    }
-
-    #send-order:hover {
-        background-color: #45a049;
-    }
-</style>
+        /* Ajustes para modo paisagem */
+        @media (orientation: landscape) {
+            /* Ajustes específicos para paisagem, se necessário */
+        }
+    </style>
 </head>
 <body>
-    <div id="splash-screen">
-        <img src="https://edypizzariadelivery.github.io/logo.jpg" alt="Edy Pizzaria Logo" id="logo">
-        <h1>EDY PIZZARIA - DELIVERY</h1>
-        <button class="btn" id="cardapio-btn">CARDÁPIO</button>
-        <button class="btn" id="game-btn">EDY GAME</button>
+    <!-- Overlay para orientação -->
+    <div id="orientationOverlay">
+        <p>Por favor, gire seu dispositivo para o modo paisagem para uma melhor experiência.</p>
     </div>
 
-    <div id="video-overlay">
-        <video id="ad-video" controls>
-            <source src="" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-    </div>
-    <div id="notification" class="notification">
-        <p>Item adicionado ao carrinho!</p>
-    </div>
-    <header>
-        <img src="https://edypizzariadelivery.github.io/logo.jpg" alt="Logo da Pizzaria" class="logo">
-    </header>
-
-    <div class="container">
-        <section class="menu-section">
-            <h2>Pizzas</h2>
-            <div class="menu-grid" id="pizza-menu"></div>
-        </section>
-    </div>
-
-    <div id="cart">
-        <h2>Carrinho</h2>
-    
-        <label>Nome:</label>
-        <br>
-        <input type="text" id="nome" placeholder="Seu nome" required>
-        <br><br>
-        <label>Forma de pagamento:</label><br>
-        <label><input type="radio" name="payment" value="Dinheiro"> Dinheiro</label>
-        <label><input type="radio" name="payment" value="Pix"> Pix</label>
-        <label><input type="radio" name="payment" value="Cartão"> Cartão</label><br><br>
-        <div id="cart-items"></div>
-        <div id="cart-total">Total: R$ 0,00</div>
-        <div class="delivery-options">
-            <label>
-                <input type="radio" name="delivery" value="pickup" checked> Retirar no local
-            </label>
-            <label>
-                <input type="radio" name="delivery" value="delivery"> Entrega
-            </label>
-            <div id="address-input" style="display: none;">
-            <label for="bairro">Bairro:</label>
-            <input type="text" id="bairro" placeholder="Bairro" required>
-            <label for="rua">Rua:</label>
-            <input type="text" id="rua" placeholder="Rua" required>
-            <label for="numero">Número:</label>
-            <input type="text" id="numero" placeholder="Número" required>
-            </div>
-            <button id="send-order" onclick="submitOrder()">Enviar Pedido</button>
+    <!-- Tabuleiro do jogo -->
+    <div class="gameboard">
+        <!-- Área de exibição dos pontos e jacarés pulados -->
+        <div class="points" id="pointsArea">
+            <p>Pontos: <span id="points">0</span></p>
+            <p>Jacarés: <span id="cocosPulados">0</span></p>
         </div>
+        
+        <!-- Container com instruções iniciais e botão de play -->
+        <div class="container" id="initialInstructions">
+            <p>Clique na tela para pular, dois cliques para pausar/resumir.</p>
+            <button class="btn" id="playBtn">Play</button>
+        </div>
+        
+        <!-- Botão de reinício, inicialmente oculto -->
+        <button class="btn" id="restartBtn">Restart</button>
+        
+        <!-- Imagens das nuvens, rinoceronte e coco -->
+        <img src="https://edypizzariadelivery.github.io/nuvem.jpg" class="clouds" alt="Nuvens">
+        <img src="https://edypizzariadelivery.github.io/rino.gif" class="rino" alt="Rinoceronte">
+        <img src="https://edypizzariadelivery.github.io/coco.gif" class="coco" alt="Coco"> 
     </div>
-
-    <div id="cart-toggle">
-        <i class="fas fa-shopping-cart"></i>
-        <span>Carrinho</span>
-    </div>
-
-    <audio id="background-music" loop>
-        <source src="pizza12.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-
+    
+    <!-- Áudios do jogo -->
+    <audio id="backgroundMusic" src="https://edypizzariadelivery.github.io/background.mp3" loop></audio>
+    <audio id="jumpSound" src="https://edypizzariadelivery.github.io/jump.mp3"></audio>
+    <audio id="loseSound" src="https://edypizzariadelivery.github.io/lose.mp3"></audio>
+    
+    <!-- Script JavaScript para a lógica do jogo -->
     <script>
-        const splashScreen = document.getElementById('splash-screen');
-        const mainContent = document.getElementById('main-content');
-        const cardapioBtn = document.getElementById('cardapio-btn');
-        const gameBtn = document.getElementById('game-btn');
-        const backgroundMusic = document.getElementById('background-music');
-        const videoOverlay = document.getElementById('video-overlay');
-        const adVideo = document.getElementById('ad-video');
+        // Seleção dos elementos do DOM
+        const rino = document.querySelector('.rino');
+        const coco = document.querySelector('.coco');
+        const clouds = document.querySelector('.clouds');
+        const gameboard = document.querySelector('.gameboard');
+        const playBtn = document.getElementById('playBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const jumpSound = document.getElementById('jumpSound');
+        const loseSound = document.getElementById('loseSound');
+        const pointsDisplay = document.getElementById('points');
+        const cocosPuladosDisplay = document.getElementById('cocosPulados');
+        const pointsArea = document.getElementById('pointsArea');
+        const orientationOverlay = document.getElementById('orientationOverlay');
+        
+        // Variáveis de controle do jogo
+        let gameInterval;
+        let gamePaused = false;
+        let gameStarted = false;
+        let pontos = 0;
+        let cocosPulados = 0;
 
-        const showMainContent = () => {
-            splashScreen.style.display = 'none';
-            mainContent.style.display = 'block';
+        /**
+         * Função para adicionar pontos e contar jacarés pulados
+         */
+        const addPoints = () => {
+            pontos += 100; // Incrementa pontos
+            pointsDisplay.textContent = pontos; // Atualiza a exibição dos pontos
+            cocosPulados++; // Incrementa contador de jacarés pulados
+            cocosPuladosDisplay.textContent = cocosPulados; // Atualiza a exibição
+
+            // Verifica se o jogador pulou 10 jacarés
+            if (cocosPulados === 10) {
+                endGame(); // Finaliza o jogo
+            }
         };
 
-        const playBackgroundMusic = () => {
-            backgroundMusic.play().catch(error => {
-                console.log("Autoplay prevented:", error);
-            });
+        /**
+         * Função para encerrar o jogo quando uma condição é atendida
+         */
+        const endGame = () => {
+            clearInterval(gameInterval); // Limpa o intervalo do jogo
+            resetGame(); // Reseta o jogo
+
+            // Exibe uma mensagem de passagem de fase
+            pointsArea.innerHTML += '<p>Parabéns! Você passou de fase!</p>';
         };
 
-        const showAd = () => {
-            const adUrls = [
-                'https://edypizzariadelivery.github.io/anuncio1.mp4',
-                'https://edypizzariadelivery.github.io/anuncio2.mp4',
-                'https://edypizzariadelivery.github.io/anuncio3.mp4',
-                'https://edypizzariadelivery.github.io/anuncio4.mp4'
-            ];
-            const randomAd = adUrls[Math.floor(Math.random() * adUrls.length)];
-            adVideo.src = randomAd;
-            videoOverlay.style.display = 'flex';
-            adVideo.play();
+        /**
+         * Função para realizar o pulo do rinoceronte
+         */
+        const jump = () => {
+            // Verifica se o rinoceronte não está pulando, o jogo não está pausado e já iniciou
+            if (!rino.classList.contains('jump') && !gamePaused && gameStarted) {
+                rino.classList.add('jump'); // Adiciona a classe de pulo
+                jumpSound.currentTime = 0; // Reinicia o áudio de pulo
+                jumpSound.play(); // Toca o som de pulo
+
+                // Remove a classe de pulo após a animação
+                setTimeout(() => {
+                    rino.classList.remove('jump');
+                }, 500); // Duração da animação de pulo
+
+                addPoints(); // Adiciona pontos ao pular o coco
+            }
         };
 
-        cardapioBtn.addEventListener('click', () => {
-            showMainContent();
-            playBackgroundMusic();
-        });
-
-        gameBtn.addEventListener('click', () => {
-            showAd();
-        });
-
-        adVideo.addEventListener('ended', () => {
-            videoOverlay.style.display = 'none';
-            window.location.href = 'https://edypizzariadelivery.github.io/game.html';
-        });
-        const menu = {
-            pizzas: [
-                { name: 'Calabresa', extra: 3.00, sizes: { M: 34.99, G: 39.99 }, image: 'https://edypizzariadelivery.github.io/calabresa.webp', description: 'Deliciosa pizza coberta com fatias de calabresa, cebola e azeitonas.' },
-                { name: 'Carne Seca', sizes: { M: 34.99, G: 39.99 }, image: 'https://edypizzariadelivery.github.io/carne-seca.webp', description: 'Saborosa combinação de carne seca desfiada, cebola e catupiry.' },
-                { name: 'Lombo canadense', sizes: { M: 34.99, G: 39.99 }, image: 'https://edypizzariadelivery.github.io/lombo.jpg', description: 'Irresistível combinação de Lombo canadense, mussarela, cebola, requeijão cremoso.' },
-                { name: 'Frango com Catupiry', sizes: { M: 38.00, G: 45.00 }, image: 'https://edypizzariadelivery.github.io/frango.webp', description: 'Irresistível mistura de frango desfiado com o cremoso catupiry.' },
-            ]
+        /**
+         * Função para pausar ou retomar o jogo
+         */
+        const pauseResumeGame = () => {
+            if (!gamePaused && gameStarted) {
+                // Pausar o jogo
+                gamePaused = true;
+                backgroundMusic.pause(); // Pausa a música de fundo
+                clouds.style.animationPlayState = 'paused'; // Pausa a animação das nuvens
+                coco.style.animationPlayState = 'paused'; // Pausa a animação do coco
+                clearInterval(gameInterval); // Limpa o intervalo do jogo
+                playBtn.textContent = 'Resume'; // Altera o texto do botão
+            } else if (gamePaused && gameStarted) {
+                // Retomar o jogo
+                gamePaused = false;
+                backgroundMusic.play(); // Reproduz a música de fundo
+                clouds.style.animationPlayState = 'running'; // Retoma a animação das nuvens
+                coco.style.animationPlayState = 'running'; // Retoma a animação do coco
+                startGame(); // Reinicia o intervalo do jogo
+                playBtn.textContent = 'Restart'; // Altera o texto do botão
+            }
         };
-    
-        const cart = [];
-        const deliveryFee = 3.00;
-    
-        function showNotification() {
-            const notification = document.getElementById('notification');
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 2000);
-        }
-    
-        function renderMenu(category, containerId) {
-            const container = document.getElementById(containerId);
-            menu[category].forEach(item => {
-                const menuItem = document.createElement('div');
-                menuItem.className = 'menu-item';
-                menuItem.innerHTML = `
-                    <img class="menu-img" src="${item.image}" alt="${item.name}" width="250" height="200">
-                    <div class="menu-info">
-                        <div class="menu-name">${item.name}</div>
-                        <div class="menu-description">${item.description}</div>
-                        <div class="borda-recheada-option">
-                            <input type="checkbox" id="extra-borda-${item.name}">
-                            <label for="extra-borda-${item.name}">Borda recheada (+R$ 3,00)</label>
-                        </div>
-                        <div class="size-buttons-wrapper">
-                            <button class="size-btn" onclick="addToCart('${item.name}', 'M', ${item.sizes.M}, 'extra-borda-${item.name}')">M - R$ ${item.sizes.M.toFixed(2)}</button>
-                            <button class="size-btn" onclick="addToCart('${item.name}', 'G', ${item.sizes.G}, 'extra-borda-${item.name}')">G - R$ ${item.sizes.G.toFixed(2)}</button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(menuItem);
-            });
-        }
-    
-        function addToCart(name, size, price, extraBordaId) {
-            const existingItem = cart.find(item => item.name === name && item.size === size);
-            const extraBorda = document.getElementById(extraBordaId).checked;
-            const extraBordaPrice = extraBorda ? 3.00 : 0;
-            const totalPrice = price + extraBordaPrice;
-    
-            if (existingItem) {
-                existingItem.quantity += 1;
-                existingItem.price = totalPrice; // Update price if necessary
-                existingItem.extraBorda = extraBorda;
+
+        /**
+         * Função para solicitar tela cheia
+         */
+        const requestFullscreen = () => {
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                return elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) { // Firefox
+                return elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) { // Chrome, Safari e Opera
+                return elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) { // IE/Edge
+                return elem.msRequestFullscreen();
+            }
+        };
+
+        /**
+         * Função para travar a orientação para paisagem
+         */
+        const lockOrientation = () => {
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(function(error) {
+                    console.warn('Não foi possível travar a orientação:', error);
+                    checkOrientation();
+                });
             } else {
-                cart.push({ name, size, price: totalPrice, extraBorda, quantity: 1 });
+                checkOrientation();
             }
-            updateCart();
-            showNotification();
-        }
-    
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCart();
-        }
-    
-        function updateItemQuantity(index, change) {
-            cart[index].quantity += change;
-            if (cart[index].quantity === 0) {
-                removeFromCart(index);
+        };
+
+        /**
+         * Função para verificar a orientação e mostrar o overlay se necessário
+         */
+        const checkOrientation = () => {
+            if (window.innerWidth < window.innerHeight) {
+                orientationOverlay.style.display = 'flex';
             } else {
-                updateCart();
+                orientationOverlay.style.display = 'none';
             }
-        }
-    
-        function updateCart() {
-            const cartItems = document.getElementById('cart-items');
-            const cartTotal = document.getElementById('cart-total');
-            
-            cartItems.innerHTML = '';
-            let total = 0;
-    
-            cart.forEach((item, index) => {
-                const itemElement = document.createElement('div');
-                itemElement.className = 'cart-item fade-in';
-                itemElement.innerHTML = `
-                    <div class="cart-item-info">
-                        <div class="cart-item-name">${item.name} (${item.size})${item.extraBorda ? ' com borda recheada' : ''}</div>
-                        <div class="cart-item-price">R$ ${(item.price * item.quantity).toFixed(2)}</div>
-                    </div>
-                    <div class="cart-item-controls">
-                        <button class="quantity-btn" onclick="updateItemQuantity(${index}, -1)">-</button>
-                        <span class="cart-item-quantity">${item.quantity}</span>
-                        <button class="quantity-btn" onclick="updateItemQuantity(${index}, 1)">+</button>
-                        <button class="remove-item" onclick="removeFromCart(${index})">
-                            <i class="fas fa-trash-alt"></i>
-                        </button>
-                    </div>
-                `;
-                cartItems.appendChild(itemElement);
-                total += item.price * item.quantity;
+        };
+
+        // Event listener para mudanças na orientação
+        window.addEventListener('resize', checkOrientation);
+        window.addEventListener('orientationchange', checkOrientation);
+
+        /**
+         * Função para iniciar o jogo
+         */
+        const startGame = () => {
+            // Solicita tela cheia
+            requestFullscreen().catch(err => {
+                console.warn(`Erro ao tentar entrar em tela cheia: ${err.message} (${err.name})`);
             });
-    
-            const deliveryOption = document.querySelector('input[name="delivery"]:checked')?.value;
-            if (deliveryOption === 'delivery') {
-                total += deliveryFee;
-            }
-    
-            cartTotal.textContent = `Total: R$ ${total.toFixed(2)}`;
-        }
-    
-        function sendOrder() {
-            const nome = document.getElementById('nome').value;
-            const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value;
-            const deliveryType = document.querySelector('input[name="delivery"]:checked')?.value;
-            const bairro = document.getElementById('bairro').value;
-            const rua = document.getElementById('rua').value;
-            const numero = document.getElementById('numero').value;
-    
-            if (!nome || !paymentMethod || !deliveryType) {
-                alert('Por favor, preencha todos os campos obrigatórios.');
-                return;
-            }
-    
-            if (deliveryType === 'delivery' && (!bairro || !rua || !numero)) {
-                alert('Por favor, preencha o endereço de entrega.');
-                return;
-            }
-            
-            let message = `Olá! Gostaria de fazer o seguinte pedido:\n\nNome: *${nome}*\n\n`;
-            cart.forEach(item => {
-                message += `${item.quantity} - ${item.name} (${item.size})${item.extraBorda ? ' com borda recheada' : ''} - R$ ${(item.price * item.quantity).toFixed(2)} \n`;
+
+            // Tenta travar a orientação para paisagem
+            lockOrientation();
+
+            gameStarted = true; // Define que o jogo iniciou
+            document.getElementById('initialInstructions').style.display = 'none'; // Oculta as instruções iniciais
+            playBtn.style.display = 'none'; // Oculta o botão de play
+            restartBtn.style.display = 'block'; // Mostra o botão de reinício
+            gameboard.style.display = 'block'; // Exibe o tabuleiro do jogo
+            coco.style.display = 'block'; // Exibe o coco
+            coco.style.animation = 'coco-animation 1.5s infinite linear'; // Inicia a animação do coco
+            rino.src = 'https://edypizzariadelivery.github.io/rino.gif'; // Define a imagem do rinoceronte
+            rino.style.width = '150px'; // Define a largura do rinoceronte
+            rino.style.bottom = '0'; // Posiciona o rinoceronte na base
+
+            // Adiciona evento de clique para pular
+            gameboard.addEventListener('click', () => {
+                jump();
             });
-    
-            let total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    
-            if (deliveryType === 'delivery') {
-                message += `\nTaxa de entrega: R$ ${deliveryFee.toFixed(2)}`;
-                total += deliveryFee;
-                message += `\nEndereço de entrega: \n${bairro}, ${rua}, ${numero}`;
-            } else {
-                message += '\nRetirada no local';
-            }
-    
-            message += `\n\n*Total: R$ ${total.toFixed(2)}*`;
-            message += `\nForma de pagamento: \n${paymentMethod}`;
-    
-            const encodedMessage = encodeURIComponent(message);
-            window.open(`https://wa.me/5567996375220?text=${encodedMessage}`, '_blank');
-        }
-    
-        document.getElementById('send-order').addEventListener('click', sendOrder);
-    
-        document.querySelectorAll('input[name="delivery"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const addressInput = document.getElementById('address-input');
-                if (this.value === 'delivery') {
-                    addressInput.style.display = 'block';
-                } else {
-                    addressInput.style.display = 'none';
+
+            // Adiciona evento de duplo clique para pausar ou retomar
+            gameboard.addEventListener('dblclick', () => {
+                pauseResumeGame();
+            });
+
+            backgroundMusic.play(); // Inicia a música de fundo
+
+            // Intervalo para verificar colisões
+            gameInterval = setInterval(() => {
+                const cocoPosition = coco.getBoundingClientRect().left; // Posição atual do coco
+                const rinoPosition = parseFloat(window.getComputedStyle(rino).bottom.replace('px', '')); // Posição atual do rinoceronte
+
+                // Verifica se houve colisão entre o rinoceronte e o coco
+                if (cocoPosition < 110 && cocoPosition > 0 && rinoPosition < 80) {
+                    coco.style.animation = 'none'; // Para a animação do coco
+                    coco.style.left = `${cocoPosition}px`; // Mantém a posição atual do coco
+
+                    rino.style.animation = 'none'; // Para a animação do rinoceronte
+                    rino.style.bottom = `${rinoPosition}px`; // Mantém a posição atual do rinoceronte
+
+                    // Altera a imagem e estilo do rinoceronte para indicar a colisão
+                    rino.src = "https://edypizzariadelivery.github.io/cocozin.jpg";
+                    rino.style.width = '100px';
+                    rino.style.marginLeft = '50px';
+
+                    clearInterval(gameInterval); // Limpa o intervalo do jogo
+                    restartBtn.style.display = 'block'; // Mostra o botão de reinício
+                    loseSound.currentTime = 0; // Reinicia o som de derrota
+                    loseSound.play(); // Toca o som de derrota
+
+                    backgroundMusic.pause(); // Pausa a música de fundo
+                    backgroundMusic.currentTime = 0; // Reseta a música de fundo
                 }
-                updateCart();
-            });
+            }, 10); // Verifica a cada 10 milissegundos
+        };
+
+        /**
+         * Função para resetar o jogo para o estado inicial
+         */
+        const resetGame = () => {
+            gameStarted = false; // Define que o jogo não está iniciado
+            clearInterval(gameInterval); // Limpa o intervalo do jogo
+            coco.style.left = ''; // Reseta a posição do coco
+            coco.style.display = 'none'; // Oculta o coco
+            coco.style.animation = ''; // Remove a animação do coco
+            rino.style.bottom = '0'; // Reseta a posição do rinoceronte
+            rino.style.animation = ''; // Remove a animação do rinoceronte
+            rino.src = 'https://edypizzariadelivery.github.io/rino.gif'; // Reseta a imagem do rinoceronte
+            rino.style.width = '150px'; // Reseta a largura do rinoceronte
+            rino.style.marginLeft = ''; // Reseta a margem esquerda do rinoceronte
+            backgroundMusic.pause(); // Pausa a música de fundo
+            backgroundMusic.currentTime = 0; // Reseta a música de fundo
+            document.getElementById('initialInstructions').style.display = 'flex'; // Mostra as instruções iniciais
+            playBtn.textContent = 'Play'; // Reseta o texto do botão de play
+            playBtn.style.display = 'block'; // Mostra o botão de play
+            restartBtn.style.display = 'none'; // Oculta o botão de reinício
+            pontos = 0; // Reseta os pontos
+            cocosPulados = 0; // Reseta os jacarés pulados
+            pointsDisplay.textContent = pontos; // Atualiza a exibição dos pontos
+            cocosPuladosDisplay.textContent = cocosPulados; // Atualiza a exibição dos jacarés pulados
+        };
+
+        /**
+         * Evento de clique no botão de play/reinício
+         */
+        playBtn.addEventListener('click', () => {
+            if (playBtn.textContent === 'Restart') {
+                resetGame(); // Reseta o jogo
+                startGame(); // Inicia o jogo novamente
+            } else if (playBtn.textContent === 'Play') {
+                startGame(); // Inicia o jogo
+            } else if (playBtn.textContent === 'Resume') {
+                pauseResumeGame(); // Retoma o jogo
+            }
         });
-    
-        function toggleCart() {
-            const cart = document.getElementById('cart');
-            cart.classList.toggle('show');
-        }
-    
-        document.getElementById('cart-toggle').addEventListener('click', toggleCart);
-    
-        renderMenu('pizzas', 'pizza-menu');
+
+        /**
+         * Evento de clique no botão de reinício
+         */
+        restartBtn.addEventListener('click', () => {
+            resetGame(); // Reseta o jogo
+            startGame(); // Inicia o jogo novamente
+        });
+
+        // Verifica a orientação ao carregar a página
+        window.addEventListener('load', checkOrientation);
     </script>
 </body>
-</html></body></html>
+</html>
