@@ -463,11 +463,22 @@
     </div>
 
     <audio id="background-music" loop>
-        <source src="pizza12.mp3" type="audio/mpeg">
+        <source src="https://edypizzariadelivery.github.io/pizza12.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
     <script>
+        const music = document.getElementById("background-music");
+        const button = document.getElementById("cardapio-btn");
+
+        button.addEventListener("click", () => {
+            // Verifica se a música já está tocando
+            if (music.paused) {
+                music.play(); // Começa a tocar a música
+            } else {
+                music.pause(); // Pausa a música se já estiver tocando
+            }
+        });
         const splashScreen = document.getElementById('splash-screen');
         const mainContent = document.getElementById('main-content');
         const cardapioBtn = document.getElementById('cardapio-btn');
