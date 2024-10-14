@@ -12,232 +12,233 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-    body {
-        background-color: #002D24;
-        color: #FFFFFF;
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+body {
+    background-color: #002D24;
+    color: #FFFFFF;
+    font-family: 'Roboto', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    display: grid;
+    grid-template-areas: 
+        "logo gif-area"
+        "chat-area cart"
+        "chat-area bot-gif";
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 10px;
+    padding: 10px;
+    max-width: 1024px;
+    width: 100%;
+    height: 768px;
+    box-sizing: border-box;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 10px;
+}
+
+.logo {
+    grid-area: logo;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo img {
+    max-width: 100px;
+    height: auto;
+}
+
+.gif-area {
+    grid-area: gif-area;
+    background-color: #F5E050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#currentGif {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
+.chat-area {
+    grid-area: chat-area;
+    background-color: #B80000;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-box {
+    background: #FFFFFF;
+    color: #000000;
+    flex-grow: 1;
+    margin-bottom: 10px;
+    overflow-y: auto;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    max-width: 80%;
+}
+
+.bot-message {
+    background-color: #f1f1f1;
+    align-self: flex-start;
+}
+
+.user-message {
+    background-color: #e1f5fe;
+    align-self: flex-end;
+}
+
+.chat-input {
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+}
+
+.btn {
+    padding: 10px 20px;
+    background-color: #00FF00;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #00CC00;
+}
+
+.cart {
+    grid-area: cart;
+    background-color: #FFFFFF;
+    color: #000000;
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+#cartItems {
+    list-style-type: none;
+    padding: 0;
+    margin: 10px 0;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+#cartItems li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+
+.cart-item-controls {
+    display: flex;
+    align-items: center;
+}
+
+.cart-item-controls button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.bot-gif {
+    grid-area: bot-gif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 8px;
+}
+
+#botGif {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.options-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.option-btn {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.pizza-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.pizza-option img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-bottom: 5px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        grid-template-areas: 
+            "logo"
+            "gif-area"
+            "chat-area"
+            "cart"
+            "bot-gif";
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto 1fr auto auto;
+        height: auto;
         min-height: 100vh;
     }
-
-    .container {
-        display: grid;
-        grid-template-areas: 
-            "logo gif-area"
-            "chat-area cart"
-            "chat-area bot-gif";
-        grid-template-columns: 3fr 1fr;
-        grid-template-rows: auto 1fr auto;
-        gap: 10px;
-        padding: 10px;
-        max-width: 1024px;
-        width: 100%;
-        height: 768px; /* 4:3 aspect ratio */
-        box-sizing: border-box;
-        background-color: rgba(0,0,0,0.5);
-        border-radius: 10px;
-    }
-
-    .logo {
-        grid-area: logo;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .logo img {
-        max-width: 100px;
-        height: auto;
-    }
-
-    .gif-area {
-        grid-area: gif-area;
-        background-color: #F5E050;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    #currentGif {
-        width: 40px;
-        height: auto;
-        object-fit: cover;
-    }
-
-    .chat-area {
-        grid-area: chat-area;
-        background-color: #B80000;
-        padding: 10px;
-        border-radius: 8px;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .chat-box {
-        background: #FFFFFF;
-        color: #000000;
-        flex-grow: 1;
-        margin-bottom: 10px;
-        overflow-y: auto;
-        padding: 10px;
-        border-radius: 5px;
-    }
-
-    .message {
-        margin-bottom: 10px;
-        padding: 8px 12px;
-        border-radius: 5px;
-        max-width: 80%;
-    }
-
-    .bot-message {
-        background-color: #f1f1f1;
-        align-self: flex-start;
-    }
-
-    .user-message {
-        background-color: #e1f5fe;
-        align-self: flex-end;
-    }
-
-    .chat-input {
-        display: flex;
-        gap: 10px;
-    }
-
-    .chat-input input {
-        flex-grow: 1;
-        padding: 10px;
-        border: none;
-        border-radius: 4px;
-    }
-
-    .btn {
-        padding: 10px 20px;
-        background-color: #00FF00;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: background-color 0.3s;
-    }
-
-    .btn:hover {
-        background-color: #00CC00;
-    }
-
-    .cart {
-        grid-area: cart;
-        background-color: #FFFFFF;
-        color: #000000;
-        padding: 10px;
-        border-radius: 8px;
-        display: flex;
-        flex-direction: column;
-    }
-
-    #cartItems {
-        list-style-type: none;
-        padding: 0;
-        margin: 10px 0;
-        flex-grow: 1;
-        overflow-y: auto;
-    }
-
-    #cartItems li {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 5px;
-    }
-
-    .cart-item-controls {
-        display: flex;
-        align-items: center;
-    }
-
-    .cart-item-controls button {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        margin: 0 5px;
-        cursor: pointer;
-        border-radius: 3px;
-    }
-
-    .bot-gif {
-        grid-area: bot-gif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        border-radius: 8px;
-    }
-
-    #botGif {
-        width: 1%;
-        height: 100%;
-        object-fit: cover;
-    }
-
-    .options-buttons {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 5px;
-        margin-top: 10px;
-    }
-
-    .option-btn {
-        background-color: #4CAF50;
-        border: none;
-        color: white;
-        padding: 10px 15px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 14px;
-        margin: 2px;
-        cursor: pointer;
-        border-radius: 4px;
-    }
-
-    .pizza-option {
-        display: flex;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-
-    .pizza-option img {
-        width: 50px;
-        height: 50px;
-        object-fit: cover;
-        margin-right: 10px;
-        border-radius: 5px;
-    }
-
-    @media (max-width: 768px) {
-        .container {
-            grid-template-areas: 
-                "logo"
-                "gif-area"
-                "chat-area"
-                "cart"
-                "bot-gif";
-            grid-template-columns: 1fr;
-            grid-template-rows: auto auto 1fr auto auto;
-            height: auto;
-            min-height: 100vh;
-        }
-    }
+}
 </style>
 </head>
 <body>
@@ -354,6 +355,11 @@
                 if (item.stuffedBorder) itemPrice += 3;
                 return total + (itemPrice * item.quantity);
             }, 0);
+
+            if (state.deliveryMethod === 'delivery') {
+                state.totalPrice += 3;
+            }
+
             totalPriceElement.textContent = state.totalPrice.toFixed(2);
         }
 
@@ -371,15 +377,9 @@
                 addMessage("Seu carrinho está vazio. Adicione pizzas antes de enviar o pedido.", 'bot-message');
                 return;
             }
-            const orderDetails = cart.map(item => `${item.name} (${item.size}${item.stuffedBorder ? ', Borda Recheada' : ''}) x${item.quantity} - R$ ${(item.price * item.quantity).toFixed(2)}`).join('\n');
-            const message = `Pedido confirmado!\n${orderDetails}\nTotal: R$ ${state.totalPrice.toFixed(2)}`;
-            addMessage(message, 'bot-message');
-            cart.length = 0;
-            updateCart();
-            updateTotalPrice();
-            updateGif();
-            state.currentStep = 'finished';
-            showOptions(['Novo Pedido']);
+            addMessage("Como você prefere receber seu pedido?", 'bot-message');
+            showOptions(['Entrega', 'Retirar no local']);
+            state.currentStep = 'delivery_method';
         });
 
         sendChatBtn.addEventListener('click', sendMessage);
@@ -399,7 +399,7 @@
         function addMessage(message, type) {
             const messageElement = document.createElement('div');
             messageElement.className = `message ${type}`;
-            messageElement.textContent = message;
+            messageElement.innerHTML = message;
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
@@ -470,11 +470,41 @@
                         showPizzaOptions();
                         state.currentStep = 'pizza_selection';
                     } else if (message === 'Não, finalizar pedido') {
-                        finalizePedido();
+                        addMessage("Como você prefere receber seu pedido?", 'bot-message');
+                        showOptions(['Entrega', 'Retirar no local']);
+                        state.currentStep = 'delivery_method';
                     } else {
                         addMessage("Por favor, escolha uma das opções disponíveis.", 'bot-message');
                         showOptions(['Sim, outra pizza', 'Não, finalizar pedido']);
                     }
+                    break;
+                case 'delivery_method':
+                    if (message === 'Entrega') {
+                        state.deliveryMethod = 'delivery';
+                        addMessage("Entrega selecionada. Será cobrada uma taxa adicional de R$ 3,00.", 'bot-message');
+                        addMessage("Por favor, informe seu bairro:", 'bot-message');
+                        state.currentStep = 'bairro';
+                    } else if (message === 'Retirar no local') {
+                        state.deliveryMethod = 'pickup';
+                        finalizePedido();
+                    } else {
+                        addMessage("Por favor, escolha uma das opções disponíveis.", 'bot-message');
+                        showOptions(['Entrega', 'Retirar no local']);
+                    }
+                    break;
+                case 'bairro':
+                    state.address.bairro = message;
+                    addMessage("Agora, informe sua rua:", 'bot-message');
+                    state.currentStep = 'rua';
+                    break;
+                case 'rua':
+                    state.address.rua = message;
+                    addMessage("Por último, informe o número:", 'bot-message');
+                    state.currentStep = 'numero';
+                    break;
+                case 'numero':
+                    state.address.numero = message;
+                    finalizePedido();
                     break;
                 case 'finished':
                     if (message.toLowerCase() === 'novo pedido') {
@@ -539,9 +569,26 @@
         }
 
         function finalizePedido() {
+            updateTotalPrice();
             const orderDetails = cart.map(item => `${item.name} (${item.size}${item.stuffedBorder ? ', Borda Recheada' : ''}) x${item.quantity} - R$ ${(item.price * item.quantity).toFixed(2)}`).join('\n');
-            const message = `Pedido confirmado!\n${orderDetails}\nTotal: R$ ${state.totalPrice.toFixed(2)}`;
+            let message = `Pedido confirmado!\n${orderDetails}\n`;
+            
+            if (state.deliveryMethod === 'delivery') {
+                message += `Endereço de entrega: ${state.address.rua}, ${state.address.numero}, ${state.address.bairro}\n`;
+                message += `Taxa de entrega: R$ 3,00\n`;
+            } else {
+                message += `Retirada no local\n`;
+            }
+            
+            message += `Total: R$ ${state.totalPrice.toFixed(2)}`;
+            
             addMessage(message, 'bot-message');
+            
+            const whatsappMessage = encodeURIComponent(message);
+            const whatsappLink = `https://wa.me/5512982572507?text=${whatsappMessage}`;
+            
+            addMessage(`Clique aqui para enviar o pedido pelo WhatsApp: <a href="${whatsappLink}" target="_blank">Enviar Pedido</a>`, 'bot-message');
+            
             cart.length = 0;
             updateCart();
             updateTotalPrice();
