@@ -12,7 +12,6 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
         <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-
     body {
         background-color: #002D24;
         color: #FFFFFF;
@@ -30,7 +29,7 @@
         grid-template-areas: 
             "logo gif-area"
             "chat-area cart"
-            "chat-area mascot";
+            "chat-area bot-gif";
         grid-template-columns: 3fr 1fr;
         grid-template-rows: auto 1fr auto;
         gap: 10px;
@@ -66,8 +65,8 @@
     }
 
     #currentGif {
-        width: 100%;
-        height: 100%;
+        width: 40px;
+        height: auto;
         object-fit: cover;
     }
 
@@ -160,17 +159,34 @@
         padding-bottom: 5px;
     }
 
-    .mascot {
-        grid-area: mascot;
+    .cart-item-controls {
         display: flex;
-        justify-content: center;
         align-items: center;
     }
 
-    .mascot img {
-        max-width: 100px;
-        height: auto;
-        border-radius: 10px;
+    .cart-item-controls button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        margin: 0 5px;
+        cursor: pointer;
+        border-radius: 3px;
+    }
+
+    .bot-gif {
+        grid-area: bot-gif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        border-radius: 8px;
+    }
+
+    #botGif {
+        width: 1%;
+        height: 100%;
+        object-fit: cover;
     }
 
     .options-buttons {
@@ -194,6 +210,20 @@
         border-radius: 4px;
     }
 
+    .pizza-option {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .pizza-option img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        margin-right: 10px;
+        border-radius: 5px;
+    }
+
     @media (max-width: 768px) {
         .container {
             grid-template-areas: 
@@ -201,7 +231,7 @@
                 "gif-area"
                 "chat-area"
                 "cart"
-                "mascot";
+                "bot-gif";
             grid-template-columns: 1fr;
             grid-template-rows: auto auto 1fr auto auto;
             height: auto;
@@ -217,7 +247,7 @@
         </header>
         
         <div class="gif-area">
-            <img src="https://edypizzariadelivery.github.io/rino.gif" alt="GIF Alternativo" id="currentGif">
+            <img src="https://edypizzariadelivery.github.io/coco.gif" alt="GIF Alternativo" id="currentGif">
         </div>
         
         <div class="chat-area">
@@ -236,8 +266,8 @@
             <button id="sendOrder" class="btn">ENVIAR PEDIDO</button>
         </aside>
         
-        <div class="mascot">
-            <img src="https://edypizzariadelivery.github.io/rino.gif" alt="Mascote">
+        <div class="bot-gif">
+            <img src="https://edypizzariadelivery.github.io/rino.gif" alt="Bot GIF" id="botGif">
         </div>
     </div>
 
@@ -252,16 +282,16 @@
         const optionsButtons = document.getElementById('optionsButtons');
 
         const pizzas = [
-            { name: 'Frango com Catupiry', description: 'Irresistível mistura de frango desfiado com o cremoso catupiry.', price: 34.99 },
-            { name: 'Carne Seca', description: 'Saborosa combinação de carne seca desfiada, cebola e catupiry.', price: 39.99 },
-            { name: 'Calabresa', description: 'Deliciosa pizza coberta com fatias de calabresa, cebola e azeitonas.', price: 34.99 },
-            { name: 'Lombo canadense', description: 'Irresistível combinação de Lombo canadense, mussarela, cebola, requeijão cremoso.', price: 39.99 }
+            { name: 'Frango com Catupiry', description: 'Irresistível mistura de frango desfiado com o cremoso catupiry.', price: 34.99, image: 'https://edypizzariadelivery.github.io/frango.webp' },
+            { name: 'Carne Seca', description: 'Saborosa combinação de carne seca desfiada, cebola e catupiry.', price: 39.99, image: 'https://edypizzariadelivery.github.io/carne-seca.webp' },
+            { name: 'Calabresa', description: 'Deliciosa pizza coberta com fatias de calabresa, cebola e azeitonas.', price: 34.99, image: 'https://edypizzariadelivery.github.io/calabresa.webp' },
+            { name: 'Lombo canadense', description: 'Irresistível combinação de Lombo canadense, mussarela, cebola, requeijão cremoso.', price: 39.99, image: 'https://edypizzariadelivery.github.io/lombo.jpg' }
         ];
 
         let state = {
             userName: '',
             selectedPizzas: [],
-            size: '',
+            size: 'M',
             stuffedBorder: false,
             paymentMethod: '',
             deliveryMethod: '',
@@ -273,7 +303,17 @@
         const cart = [];
 
         function addToCart(pizza) {
-            cart.push(pizza);
+            const existingItem = cart.find(item => item.name === pizza.name && item.size === state.size);
+            if (existingItem) {
+                existingItem.quantity++;
+            } else {
+                cart.push({
+                    ...pizza,
+                    quantity: 1,
+                    size: state.size,
+                    stuffedBorder: state.stuffedBorder
+                });
+            }
             updateCart();
             updateTotalPrice();
             updateGif();
@@ -286,9 +326,15 @@
                 li.innerHTML = `
                     <div>
                         <strong>${item.name}</strong>
-                        <p>R$ ${item.price.toFixed(2)}</p>
+                        <p>${item.size} ${item.stuffedBorder ? '(Borda Recheada)' : ''}</p>
+                        <p>R$ ${(item.price * item.quantity).toFixed(2)}</p>
                     </div>
-                    <button onclick="removeFromCart(${index})">Remover</button>
+                    <div class="cart-item-controls">
+                        <button onclick="decreaseQuantity(${index})">-</button>
+                        <span>${item.quantity}</span>
+                        <button onclick="increaseQuantity(${index})">+</button>
+                        <button onclick="removeFromCart(${index})">Remover</button>
+                    </div>
                 `;
                 cartItemsContainer.appendChild(li);
             });
@@ -302,7 +348,12 @@
         }
 
         function updateTotalPrice() {
-            state.totalPrice = cart.reduce((total, item) => total + item.price, 0);
+            state.totalPrice = cart.reduce((total, item) => {
+                let itemPrice = item.price;
+                if (item.size === 'G') itemPrice += 5;
+                if (item.stuffedBorder) itemPrice += 3;
+                return total + (itemPrice * item.quantity);
+            }, 0);
             totalPriceElement.textContent = state.totalPrice.toFixed(2);
         }
 
@@ -320,7 +371,7 @@
                 addMessage("Seu carrinho está vazio. Adicione pizzas antes de enviar o pedido.", 'bot-message');
                 return;
             }
-            const orderDetails = cart.map(item => `${item.name} - R$ ${item.price.toFixed(2)}`).join('\n');
+            const orderDetails = cart.map(item => `${item.name} (${item.size}${item.stuffedBorder ? ', Borda Recheada' : ''}) x${item.quantity} - R$ ${(item.price * item.quantity).toFixed(2)}`).join('\n');
             const message = `Pedido confirmado!\n${orderDetails}\nTotal: R$ ${state.totalPrice.toFixed(2)}`;
             addMessage(message, 'bot-message');
             cart.length = 0;
@@ -364,12 +415,65 @@
                 case 'pizza_selection':
                     const selectedPizza = pizzas.find(p => p.name.toLowerCase() === message.toLowerCase());
                     if (selectedPizza) {
-                        addToCart(selectedPizza);
-                        addMessage(`Ótima escolha! ${selectedPizza.name} foi adicionada ao seu carrinho. Deseja mais alguma coisa?`, 'bot-message');
-                        showOptions(['Sim, outra pizza', 'Não, finalizar pedido']);
+                        state.selectedPizzas = [selectedPizza];
+                        showSizeOptions();
                     } else {
                         addMessage("Desculpe, não temos essa pizza. Por favor, escolha uma das opções disponíveis.", 'bot-message');
                         showPizzaOptions();
+                    }
+                    break;
+                case 'mixed_pizza_1':
+                    const firstPizza = pizzas.find(p => p.name.toLowerCase() === message.toLowerCase());
+                    if (firstPizza) {
+                        state.selectedPizzas = [firstPizza];
+                        addMessage('Escolha o segundo sabor:', 'bot-message');
+                        showPizzaOptions();
+                        state.currentStep = 'mixed_pizza_2';
+                    } else {
+                        addMessage("Desculpe, não temos essa pizza. Por favor, escolha uma das opções disponíveis.", 'bot-message');
+                        showPizzaOptions();
+                    }
+                    break;
+                case 'mixed_pizza_2':
+                    const secondPizza = pizzas.find(p => p.name.toLowerCase() === message.toLowerCase());
+                    if (secondPizza) {
+                        state.selectedPizzas.push(secondPizza);
+                        showSizeOptions();
+                    } else {
+                        addMessage("Desculpe, não temos essa pizza. Por favor, escolha uma das opções disponíveis.", 'bot-message');
+                        showPizzaOptions();
+                    }
+                    break;
+                case 'size_selection':
+                    if (['M', 'G'].includes(message.toUpperCase())) {
+                        state.size = message.toUpperCase();
+                        showBorderOptions();
+                    } else {
+                        addMessage("Por favor, escolha M para média ou G para grande.", 'bot-message');
+                        showSizeOptions();
+                    }
+                    break;
+                case 'border_selection':
+                    if (['Sim', 'Não'].includes(message)) {
+                        state.stuffedBorder = message === 'Sim';
+                        addPizzaToCart();
+                        addMessage("Pizza adicionada ao carrinho. Deseja mais alguma coisa?", 'bot-message');
+                        showOptions(['Sim, outra pizza', 'Não, finalizar pedido']);
+                        state.currentStep = 'additional_pizza';
+                    } else {
+                        addMessage("Por favor, escolha Sim ou Não para a borda recheada.", 'bot-message');
+                        showBorderOptions();
+                    }
+                    break;
+                case 'additional_pizza':
+                    if (message === 'Sim, outra pizza') {
+                        showPizzaOptions();
+                        state.currentStep = 'pizza_selection';
+                    } else if (message === 'Não, finalizar pedido') {
+                        finalizePedido();
+                    } else {
+                        addMessage("Por favor, escolha uma das opções disponíveis.", 'bot-message');
+                        showOptions(['Sim, outra pizza', 'Não, finalizar pedido']);
                     }
                     break;
                 case 'finished':
@@ -383,7 +487,83 @@
         }
 
         function showPizzaOptions() {
-            showOptions(pizzas.map(p => p.name));
+            optionsButtons.innerHTML = '';
+            pizzas.forEach(pizza => {
+                const button = document.createElement('div');
+                button.className = 'pizza-option';
+                button.innerHTML = `
+                    <img src="${pizza.image}" alt="${pizza.name}">
+                    <button class="option-btn">${pizza.name}</button>
+                `;
+                button.querySelector('.option-btn').onclick = () => {
+                    addMessage(pizza.name, 'user-message');
+                    processMessage(pizza.name);
+                };
+                optionsButtons.appendChild(button);
+            });
+            
+            const mixedButton = document.createElement('button');
+            mixedButton.textContent = 'Pizza Mista (Dois Sabores)';
+            mixedButton.className = 'option-btn';
+            mixedButton.onclick = () => {
+                addMessage('Pizza Mista', 'user-message');
+                showMixedPizzaOptions();
+            };
+            optionsButtons.appendChild(mixedButton);
+        }
+
+        function showMixedPizzaOptions() {
+            addMessage('Escolha o primeiro sabor:', 'bot-message');
+            showPizzaOptions();
+            state.currentStep = 'mixed_pizza_1';
+        }
+
+        function showSizeOptions() {
+            addMessage("Escolha o tamanho da pizza:", 'bot-message');
+            showOptions(['M - R$ 34,99', 'G - R$ 39,99']);
+            state.currentStep = 'size_selection';
+        }
+
+        function showBorderOptions() {
+            addMessage("Deseja borda recheada? (+ R$ 3,00)", 'bot-message');
+            showOptions(['Sim', 'Não']);
+            state.currentStep = 'border_selection';
+        }
+
+        function addPizzaToCart() {
+            let pizza = state.selectedPizzas.length === 1 ? state.selectedPizzas[0] : {
+                name: `Mista (${state.selectedPizzas[0].name} / ${state.selectedPizzas[1].name})`,
+                price: (state.selectedPizzas[0].price + state.selectedPizzas[1].price) / 2
+            };
+            addToCart(pizza);
+        }
+
+        function finalizePedido() {
+            const orderDetails = cart.map(item => `${item.name} (${item.size}${item.stuffedBorder ? ', Borda Recheada' : ''}) x${item.quantity} - R$ ${(item.price * item.quantity).toFixed(2)}`).join('\n');
+            const message = `Pedido confirmado!\n${orderDetails}\nTotal: R$ ${state.totalPrice.toFixed(2)}`;
+            addMessage(message, 'bot-message');
+            cart.length = 0;
+            updateCart();
+            updateTotalPrice();
+            updateGif();
+            state.currentStep = 'finished';
+            showOptions(['Novo Pedido']);
+        }
+
+        function increaseQuantity(index) {
+            cart[index].quantity++;
+            updateCart();
+            updateTotalPrice();
+        }
+
+        function decreaseQuantity(index) {
+            if (cart[index].quantity > 1) {
+                cart[index].quantity--;
+            } else {
+                cart.splice(index, 1);
+            }
+            updateCart();
+            updateTotalPrice();
         }
 
         function showOptions(options) {
