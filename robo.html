@@ -11,7 +11,7 @@
     
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
         <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 body {
     background-color: #002D24;
     color: #FFFFFF;
@@ -188,6 +188,12 @@ body {
     height: 100%;
     object-fit: cover;
 }
+.bot-message img {
+  width: 1em;
+  height: auto;
+  vertical-align: middle;
+}
+
 
 .options-buttons {
     display: grid;
@@ -234,7 +240,7 @@ body {
         "chat-area bot-gif";
     grid-template-columns: 3fr 1fr;
     grid-template-rows: auto 1fr auto;
-    gap: 10px;
+    gap: 5px;
     padding: 10px;
     max-width: 1024px;
     width: 100%;
@@ -249,6 +255,39 @@ body {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
     gap: 10px;
     margin-top: 10px;
+}
+h2 {
+    font-size: 1.3em;
+}
+}
+
+@media (max-width: 660px)  {
+.container {
+    display: grid;
+    grid-template-areas: 
+        "logo gif-area"
+        "chat-area cart"
+        "chat-area bot-gif";
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 10px;
+    padding: 10px;
+    max-width: 1024px;
+    width: 100%;
+    height: 688px;
+    box-sizing: border-box;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 10px;
+}
+
+.options-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 3px;
+    margin-top: 10px;
+}
+h2 {
+    font-size: 1em;
 }
 }
 </style>
@@ -285,7 +324,17 @@ body {
     </div>
 
     <script>
-        const chatBox = document.getElementById('chatBox');
+        let startTime;
+
+        // Função para iniciar a contagem de tempo ao carregar a página
+        window.onload = function() {
+            startTime = new Date().getTime(); // Captura o tempo inicial
+            // Reproduzir o áudio de boas-vindas
+            let welcomeAudio = new Audio('bv.mp3');
+            welcomeAudio.play();
+        }
+
+    const chatBox = document.getElementById('chatBox');
         const chatInput = document.getElementById('chatInput');
         const sendChatBtn = document.getElementById('sendChat');
         const sendOrderBtn = document.getElementById('sendOrder');
@@ -293,14 +342,35 @@ body {
         const totalPriceElement = document.getElementById('totalPrice');
         const gifDisplay = document.getElementById('currentGif');
         const optionsButtons = document.getElementById('optionsButtons');
-
+        
+        // Mapeamento de mensagens do robô para seus respectivos GIFs
+        const botGifs = {
+            "Bem-vindo": "https://edypizzariadelivery.github.io/rino.gif",
+            "Olá": "https://edypizzariadelivery.github.io/entrega.gif",
+            "Desculpe_pizza": "https://edypizzariadelivery.github.io/gif3.gif",
+            "Escolha_segundo_sabor": "https://edypizzariadelivery.github.io/gif4.gif",
+            "Escolha_tamanho": "https://edypizzariadelivery.github.io/gif5.gif",
+            "Escolha_M_G": "https://edypizzariadelivery.github.io/gif6.gif",
+            "Deseja_borda": "https://edypizzariadelivery.github.io/gif7.gif",
+            "Pizza_adicionada": "https://edypizzariadelivery.github.io/gif8.gif",
+            "Como_receber": "https://edypizzariadelivery.github.io/gif9.gif",
+            "Entrega_selecionada": "https://edypizzariadelivery.github.io/gif10.gif",
+            "Informe_bairro": "https://edypizzariadelivery.github.io/gif11.gif",
+            "Informe_rua": "https://edypizzariadelivery.github.io/gif12.gif",
+            "Informe_numero": "https://edypizzariadelivery.github.io/gif13.gif",
+            "Pedido_confirmado": "https://edypizzariadelivery.github.io/gif14.gif",
+            "Total_preco": "https://edypizzariadelivery.github.io/gif15.gif",
+            "Enviar_whatsapp": "https://edypizzariadelivery.github.io/gif16.gif",
+            "Desculpe_repetir": "https://edypizzariadelivery.github.io/gif17.gif"
+        };
+        
         const pizzas = [
             { name: 'Frango com Catupiry', description: 'Irresistível mistura de frango desfiado com o cremoso catupiry.', price: 34.99, image: 'https://edypizzariadelivery.github.io/frango.webp' },
             { name: 'Carne Seca', description: 'Saborosa combinação de carne seca desfiada, cebola e catupiry.', price: 39.99, image: 'https://edypizzariadelivery.github.io/carne-seca.webp' },
             { name: 'Calabresa', description: 'Deliciosa pizza coberta com fatias de calabresa, cebola e azeitonas.', price: 34.99, image: 'https://edypizzariadelivery.github.io/calabresa.webp' },
             { name: 'Lombo canadense', description: 'Irresistível combinação de Lombo canadense, mussarela, cebola, requeijão cremoso.', price: 39.99, image: 'https://edypizzariadelivery.github.io/lombo.jpg' }
         ];
-
+        
         let state = {
             userName: '',
             selectedPizzas: [],
@@ -312,9 +382,10 @@ body {
             totalPrice: 0,
             currentStep: 'name'
         };
-
+        
         const cart = [];
-
+        
+        // Função para adicionar pizza ao carrinho
         function addToCart(pizza) {
             const existingItem = cart.find(item => item.name === pizza.name && item.size === state.size);
             if (existingItem) {
@@ -331,7 +402,8 @@ body {
             updateTotalPrice();
             updateGif();
         }
-
+        
+        // Função para atualizar o carrinho na interface
         function updateCart() {
             cartItemsContainer.innerHTML = '';
             cart.forEach((item, index) => {
@@ -352,14 +424,16 @@ body {
                 cartItemsContainer.appendChild(li);
             });
         }
-
+        
+        // Função para remover item do carrinho
         function removeFromCart(index) {
             cart.splice(index, 1);
             updateCart();
             updateTotalPrice();
             updateGif();
         }
-
+        
+        // Função para atualizar o preço total
         function updateTotalPrice() {
             state.totalPrice = cart.reduce((total, item) => {
                 let itemPrice = item.price;
@@ -367,38 +441,42 @@ body {
                 if (item.stuffedBorder) itemPrice += 3;
                 return total + (itemPrice * item.quantity);
             }, 0);
-
+        
             if (state.deliveryMethod === 'delivery') {
                 state.totalPrice += 3;
             }
-
+        
             totalPriceElement.textContent = state.totalPrice.toFixed(2);
         }
-
+        
+        // Função para atualizar o GIF exibido
         function updateGif() {
             const gifs = [
-                'https://edypizzariadelivery.github.io/gif1.gif',
+                'https://edypizzariadelivery.github.io/rino.gif',
                 'https://edypizzariadelivery.github.io/gif2.gif',
                 'https://edypizzariadelivery.github.io/gif3.gif'
             ];
             gifDisplay.src = cart.length > 0 ? gifs[0] : gifs[2];
         }
-
+        
+        // Evento de clique para enviar o pedido
         sendOrderBtn.addEventListener('click', function() {
             if (cart.length === 0) {
-                addMessage("Seu carrinho está vazio. Adicione pizzas antes de enviar o pedido.", 'bot-message');
+                addBotMessage("Desculpe, não temos essa pizza. Por favor, escolha uma das opções disponíveis.", "Desculpe_pizza");
                 return;
             }
-            addMessage("Como você prefere receber seu pedido?", 'bot-message');
+            addBotMessage("Como você prefere receber seu pedido?", "Como_receber");
             showOptions(['Entrega', 'Retirar no local']);
             state.currentStep = 'delivery_method';
         });
-
+        
+        // Eventos para enviar mensagens
         sendChatBtn.addEventListener('click', sendMessage);
         chatInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') sendMessage();
         });
-
+        
+        // Função para enviar mensagem do usuário
         function sendMessage() {
             const message = chatInput.value.trim();
             if (message) {
@@ -407,7 +485,8 @@ body {
                 processMessage(message);
             }
         }
-
+        
+        // Função para adicionar mensagem ao chat
         function addMessage(message, type) {
             const messageElement = document.createElement('div');
             messageElement.className = `message ${type}`;
@@ -415,12 +494,20 @@ body {
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
-
+        
+        // Função para adicionar mensagem do robô com GIF
+        function addBotMessage(message, gifKey) {
+            const gifUrl = botGifs[gifKey] || '';
+            const messageWithGif = gifUrl ? `<img src="${gifUrl}" alt="GIF" class="bot-gif"> ${message}` : message;
+            addMessage(messageWithGif, 'bot-message');
+        }
+        
+        // Função para processar a mensagem do usuário
         function processMessage(message) {
             switch(state.currentStep) {
                 case 'name':
                     state.userName = message;
-                    addMessage(`Olá ${state.userName}! Qual pizza você gostaria de pedir?`, 'bot-message');
+                    addBotMessage(`Olá ${state.userName}! Qual pizza você gostaria de pedir?`, "Olá");
                     showPizzaOptions();
                     state.currentStep = 'pizza_selection';
                     break;
@@ -430,7 +517,7 @@ body {
                         state.selectedPizzas = [selectedPizza];
                         showSizeOptions();
                     } else {
-                        addMessage("Desculpe, não temos essa pizza. Por favor, escolha uma das opções disponíveis.", 'bot-message');
+                        addBotMessage("Desculpe, não temos essa pizza. Por favor, escolha uma das opções disponíveis.", "Desculpe_pizza");
                         showPizzaOptions();
                     }
                     break;
@@ -438,11 +525,11 @@ body {
                     const firstPizza = pizzas.find(p => p.name.toLowerCase() === message.toLowerCase());
                     if (firstPizza) {
                         state.selectedPizzas = [firstPizza];
-                        addMessage('Escolha o segundo sabor:', 'bot-message');
+                        addBotMessage('Escolha o segundo sabor:', "Escolha_segundo_sabor");
                         showPizzaOptions();
                         state.currentStep = 'mixed_pizza_2';
                     } else {
-                        addMessage("Desculpe, não temos essa pizza. Por favor, escolha uma das opções disponíveis.", 'bot-message');
+                        addBotMessage("Desculpe, não temos essa pizza. Por favor, escolha uma das opções disponíveis.", "Desculpe_pizza");
                         showPizzaOptions();
                     }
                     break;
@@ -452,16 +539,16 @@ body {
                         state.selectedPizzas.push(secondPizza);
                         showSizeOptions();
                     } else {
-                        addMessage("Desculpe, não temos essa pizza. Por favor, escolha uma das opções disponíveis.", 'bot-message');
+                        addBotMessage("Desculpe, não temos essa pizza. Por favor, escolha uma das opções disponíveis.", "Desculpe_pizza");
                         showPizzaOptions();
                     }
                     break;
                 case 'size_selection':
-                    if (['M', 'G'].includes(message.toUpperCase())) {
-                        state.size = message.toUpperCase();
+                    if (['M', 'G', 'M - R$ 34,99', 'G - R$ 39,99'].includes(message.toUpperCase())) {
+                        state.size = message.toUpperCase().charAt(0);
                         showBorderOptions();
                     } else {
-                        addMessage("Por favor, escolha M para média ou G para grande.", 'bot-message');
+                        addBotMessage("Por favor, escolha M para média ou G para grande.", "Escolha_M_G");
                         showSizeOptions();
                     }
                     break;
@@ -469,11 +556,11 @@ body {
                     if (['Sim', 'Não'].includes(message)) {
                         state.stuffedBorder = message === 'Sim';
                         addPizzaToCart();
-                        addMessage("Pizza adicionada ao carrinho. Deseja mais alguma coisa?", 'bot-message');
+                        addBotMessage("Pizza adicionada ao carrinho. Deseja mais alguma coisa?", "Pizza_adicionada");
                         showOptions(['Sim, outra pizza', 'Não, finalizar pedido']);
                         state.currentStep = 'additional_pizza';
                     } else {
-                        addMessage("Por favor, escolha Sim ou Não para a borda recheada.", 'bot-message');
+                        addBotMessage("Por favor, escolha Sim ou Não para a borda recheada.", "Deseja_borda");
                         showBorderOptions();
                     }
                     break;
@@ -482,36 +569,36 @@ body {
                         showPizzaOptions();
                         state.currentStep = 'pizza_selection';
                     } else if (message === 'Não, finalizar pedido') {
-                        addMessage("Como você prefere receber seu pedido?", 'bot-message');
+                        addBotMessage("Como você prefere receber seu pedido?", "Como_receber");
                         showOptions(['Entrega', 'Retirar no local']);
                         state.currentStep = 'delivery_method';
                     } else {
-                        addMessage("Por favor, escolha uma das opções disponíveis.", 'bot-message');
+                        addBotMessage("Por favor, escolha uma das opções disponíveis.", "Desculpe_repetir");
                         showOptions(['Sim, outra pizza', 'Não, finalizar pedido']);
                     }
                     break;
                 case 'delivery_method':
                     if (message === 'Entrega') {
                         state.deliveryMethod = 'delivery';
-                        addMessage("Entrega selecionada. Será cobrada uma taxa adicional de R$ 3,00.", 'bot-message');
-                        addMessage("Por favor, informe seu bairro:", 'bot-message');
+                        addBotMessage("Entrega selecionada. Será cobrada uma taxa adicional de R$ 3,00.", "Entrega_selecionada");
+                        addBotMessage("Por favor, informe seu bairro:", "Informe_bairro");
                         state.currentStep = 'bairro';
                     } else if (message === 'Retirar no local') {
                         state.deliveryMethod = 'pickup';
                         finalizePedido();
                     } else {
-                        addMessage("Por favor, escolha uma das opções disponíveis.", 'bot-message');
+                        addBotMessage("Por favor, escolha uma das opções disponíveis.", "Desculpe_repetir");
                         showOptions(['Entrega', 'Retirar no local']);
                     }
                     break;
                 case 'bairro':
                     state.address.bairro = message;
-                    addMessage("Agora, informe sua rua:", 'bot-message');
+                    addBotMessage("Agora, informe sua rua:", "Informe_rua");
                     state.currentStep = 'rua';
                     break;
                 case 'rua':
                     state.address.rua = message;
-                    addMessage("Por último, informe o número:", 'bot-message');
+                    addBotMessage("Por último, informe o número:", "Informe_numero");
                     state.currentStep = 'numero';
                     break;
                 case 'numero':
@@ -521,13 +608,31 @@ body {
                 case 'finished':
                     if (message.toLowerCase() === 'novo pedido') {
                         resetOrder();
+                    } else {
+                        addBotMessage("Desculpe, não entendi. Pode repetir?", "Desculpe_repetir");
                     }
                     break;
                 default:
-                    addMessage("Desculpe, não entendi. Pode repetir?", 'bot-message');
+                    addBotMessage("Desculpe, não entendi. Pode repetir?", "Desculpe_repetir");
             }
         }
-
+        
+        // Função para exibir opções como botões
+        function showOptions(options) {
+            optionsButtons.innerHTML = '';
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.className = 'option-btn';
+                button.onclick = () => {
+                    addMessage(option, 'user-message');
+                    processMessage(option);
+                };
+                optionsButtons.appendChild(button);
+            });
+        }
+        
+        // Função para exibir opções de pizza
         function showPizzaOptions() {
             optionsButtons.innerHTML = '';
             pizzas.forEach(pizza => {
@@ -553,25 +658,29 @@ body {
             };
             optionsButtons.appendChild(mixedButton);
         }
-
+        
+        // Função para exibir opções de pizza mista
         function showMixedPizzaOptions() {
-            addMessage('Escolha o primeiro sabor:', 'bot-message');
+            addBotMessage('Escolha o primeiro sabor:', "Escolha_segundo_sabor");
             showPizzaOptions();
             state.currentStep = 'mixed_pizza_1';
         }
-
+        
+        // Função para exibir opções de tamanho
         function showSizeOptions() {
-            addMessage("Escolha o tamanho da pizza:", 'bot-message');
+            addBotMessage("Escolha o tamanho da pizza:", "Escolha_tamanho");
             showOptions(['M - R$ 34,99', 'G - R$ 39,99']);
             state.currentStep = 'size_selection';
         }
-
+        
+        // Função para exibir opções de borda recheada
         function showBorderOptions() {
-            addMessage("Deseja borda recheada? (+ R$ 3,00)", 'bot-message');
+            addBotMessage("Deseja borda recheada? (+ R$ 3,00)", "Deseja_borda");
             showOptions(['Sim', 'Não']);
             state.currentStep = 'border_selection';
         }
-
+        
+        // Função para adicionar pizza ao carrinho
         function addPizzaToCart() {
             let pizza = state.selectedPizzas.length === 1 ? state.selectedPizzas[0] : {
                 name: `Mista (${state.selectedPizzas[0].name} / ${state.selectedPizzas[1].name})`,
@@ -579,27 +688,30 @@ body {
             };
             addToCart(pizza);
         }
-
+        
+        // Função para finalizar o pedido
         function finalizePedido() {
             updateTotalPrice();
             const orderDetails = cart.map(item => `${item.name} (${item.size}${item.stuffedBorder ? ', Borda Recheada' : ''}) x${item.quantity} - R$ ${(item.price * item.quantity).toFixed(2)}`).join('\n');
-            let message = `Pedido confirmado!\n${orderDetails}\n`;
+            let message = `*Pedido confirmado!*\n${orderDetails}\n`;
             
             if (state.deliveryMethod === 'delivery') {
-                message += `Endereço de entrega: ${state.address.rua}, ${state.address.numero}, ${state.address.bairro}\n`;
+                message += `Endereço de entrega:\n*Rua:* ${state.address.rua}, \n*N:* ${state.address.numero},\n*Bairro:* ${state.address.bairro}\n`;
                 message += `Taxa de entrega: R$ 3,00\n`;
             } else {
                 message += `Retirada no local\n`;
             }
             
-            message += `Total: R$ ${state.totalPrice.toFixed(2)}`;
+            message += `Total: R$ ${state.totalPrice.toFixed(2)} \n
+            *Nome: ${state.userName}*`;
             
-            addMessage(message, 'bot-message');
+            addBotMessage("Pedido confirmado!", "Pedido_confirmado");
+            addBotMessage(`Total: R$ ${state.totalPrice.toFixed(2)}`, "Total_preco");
             
             const whatsappMessage = encodeURIComponent(message);
             const whatsappLink = `https://wa.me/556799149659?text=${whatsappMessage}`;
             
-            addMessage(`Clique aqui para enviar o pedido pelo WhatsApp: <a href="${whatsappLink}" target="_blank">Enviar Pedido</a>`, 'bot-message');
+            addBotMessage(`Clique aqui para enviar o pedido pelo WhatsApp: <a href="${whatsappLink}" target="_blank">Enviar Pedido</a>`, "Enviar_whatsapp");
             
             cart.length = 0;
             updateCart();
@@ -608,13 +720,15 @@ body {
             state.currentStep = 'finished';
             showOptions(['Novo Pedido']);
         }
-
+        
+        // Função para aumentar a quantidade de um item no carrinho
         function increaseQuantity(index) {
             cart[index].quantity++;
             updateCart();
             updateTotalPrice();
         }
-
+        
+        // Função para diminuir a quantidade de um item no carrinho
         function decreaseQuantity(index) {
             if (cart[index].quantity > 1) {
                 cart[index].quantity--;
@@ -624,21 +738,8 @@ body {
             updateCart();
             updateTotalPrice();
         }
-
-        function showOptions(options) {
-            optionsButtons.innerHTML = '';
-            options.forEach(option => {
-                const button = document.createElement('button');
-                button.textContent = option;
-                button.className = 'option-btn';
-                button.onclick = () => {
-                    addMessage(option, 'user-message');
-                    processMessage(option);
-                };
-                optionsButtons.appendChild(button);
-            });
-        }
-
+        
+        // Função para resetar o pedido
         function resetOrder() {
             state = {
                 userName: '',
@@ -656,10 +757,12 @@ body {
             updateTotalPrice();
             updateGif();
             chatBox.innerHTML = '';
-            addMessage("Bem-vindo à Edy Pizzaria! Qual é o seu nome?", 'bot-message');
+            addBotMessage("Bem-vindo à Edy Pizzaria! Qual é o seu nome?", "Bem-vindo");
         }
-
-        addMessage("Bem-vindo à Edy Pizzaria! Qual é o seu nome?", 'bot-message');
+        
+        // Inicializar o chat com a mensagem de boas-vindas
+        addBotMessage("Bem-vindo à Edy Pizzaria! Qual é o seu nome?", "Bem-vindo");
+        
     </script>
 </body>
 </html>
