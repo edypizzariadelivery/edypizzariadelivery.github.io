@@ -72,7 +72,6 @@ body, html {
 
 .gif-area {
     grid-area: gif-area;
-    background-color: #F5E050;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -321,6 +320,7 @@ body, html {
         transform: scale(1);
     }
 }
+
 @media (max-width: 768px) {
     h2 {
         font-size: 1.3em;
@@ -330,14 +330,24 @@ body, html {
     font-size: 0.9em;
 }
 }
-@media (max-width: 680px) {
-    h2 {
-        font-size: 1em;
-    }
-.btn {
-    padding: 10px 20px;
-    font-size: 0.6em;
+.options-buttons{
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    
+    font-size: 0.7em;
+}.pizza-option img {
+    width: 100%;
+    height: auto;
+}.chat-area{
+    max-height: 450%;
+}.bot-message {
+    font-size: 0.7em;
 }
+.user-message {
+    font-size: 0.7em;
+}
+.option-btn {
+    font-size: 0.7em;
+    padding: 1px 1px
 }
 @media (max-width: 680px){
     h2 {
@@ -356,6 +366,10 @@ p{
     top: 0%;
     left: 5%;
 }
+}
+.options-buttons{
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    padding: 5px 8px;
 }
 @media (max-width: 472px){
     h2 {
@@ -378,6 +392,9 @@ p{
     width: 20%;
     padding: 5px;
 }
+}
+.options-buttons{
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
 }
 </style>
 </head>
@@ -416,11 +433,11 @@ p{
             </div>
         </div>
         <div class="icons-box">
-            <a href="https://websim.io/game" class="icon" title="Ir para Game">
+            <a href="https://edypizzariadelivery.github.io/game.html" class="icon" title="Ir para Game">
                 🎮
             </a>
-            <a href="https://websim.io/robo" class="icon" title="Ir para Robô">
-                🤖
+            <a href="https://edypizzariadelivery.github.io" class="icon" title="Ir para Robô">
+                📝
             </a>
         </div>
     </div>
