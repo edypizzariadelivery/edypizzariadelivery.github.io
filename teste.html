@@ -1,14 +1,17 @@
-<html><head><base href="https://edypizzariadelivery.github.io/" />
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Edy Pizzaria - O melhor delivery de pizzas. Confira nosso cardápio e faça seu pedido pelo WhatsApp!">
-<meta name="keywords" content="Pizzaria, Delivery, Pizza, Edy Pizzaria">
-<title>🤖 | Atendimento Elair</title>
-<link rel="icon" href="https://edypizzariadelivery.github.io/logo.jpg" type="image/png">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
-
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <base href="https://edypizzariadelivery.github.io/" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Edy Pizzaria - O melhor delivery de pizzas. Confira nosso cardápio e faça seu pedido pelo WhatsApp!">
+    <meta name="keywords" content="Pizzaria, Delivery, Pizza, Edy Pizzaria">
+    <title>🤖 | Atendimento Elair</title>
+    <link rel="icon" href="https://edypizzariadelivery.github.io/logo.jpg" type="image/png">
+    
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+        <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
 body, html {
     margin: 0;
     padding: 0;
@@ -19,12 +22,11 @@ body, html {
 .frame-container {
     position: relative;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #002D24;
-    overflow: hidden;
 }
 
 .frame-4-3 {
@@ -34,8 +36,6 @@ body, html {
     border: 2px solid #1c4c7d;
     display: flex;
     flex-direction: column;
-    max-width: 100%;
-    max-height: 100%;
 }
 
 .content-wrapper {
@@ -95,8 +95,6 @@ body, html {
     border-radius: 8px;
     display: flex;
     flex-direction: column;
-    height: 400px; /* Set a fixed height */
-    overflow: hidden; /* Hide overflow */
 }
 
 .chat-box {
@@ -107,7 +105,6 @@ body, html {
     overflow-y: auto;
     padding: 10px;
     border-radius: 5px;
-    max-height: calc(100% - 100px); /* Adjust based on input and buttons height */
 }
 
 .message {
@@ -221,8 +218,6 @@ body, html {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 10px;
     margin-top: 10px;
-    max-height: 200px; /* Set a max height */
-    overflow-y: auto; /* Add vertical scrollbar if needed */
 }
 
 .option-btn {
@@ -244,7 +239,6 @@ body, html {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-bottom: 10px; /* Add some space between options */
 }
 
 .pizza-option img {
@@ -257,22 +251,21 @@ body, html {
 
 .icons-box {
     position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
+    left: 10px;
+    top: 10px;
     background: #2e6ea6;
-    padding: 15px;
+    padding: 10px;
     border-radius: 10px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
     border: 2px solid #ffffff;
 }
 
 .icon {
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
     background: #ffffff;
     border-radius: 50%;
     display: flex;
@@ -281,37 +274,104 @@ body, html {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     text-decoration: none;
-    font-size: 30px;
+    font-size: 20px;
     line-height: 1;
     transition: transform 0.2s ease;
 }
 
-.icon:hover {
-    transform: scale(1.1);
+@media (max-width: 768px) {
+    .container {
+        grid-template-areas: 
+            "logo logo"
+            "chat-area chat-area"
+            "cart cart"
+            "gif-area bot-gif";
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .icons-box {
+        top: 5px;
+        left: 5px;
+        padding: 5px;
+    }
+
+    .icon {
+        width: 30px;
+        height: 30px;
+        font-size: 16px;
+    }
 }
 
-.audio-control {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #ffffff;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 20px;
-    cursor: pointer;
+@media (max-width: 480px) {
+    .container {
+        grid-template-areas: 
+            "logo"
+            "chat-area"
+            "cart"
+            "gif-area"
+            "bot-gif";
+        grid-template-columns: 1fr;
+    }
+
+    .icons-box {
+        top: 2px;
+        left: 2px;
+        padding: 3px;
+    }
+
+    .icon {
+        width: 25px;
+        height: 25px;
+        font-size: 14px;
+    }
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+#startButton {
+    padding: 20px 40px;
+    font-size: 24px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    animation: pulse 1.5s infinite;
+}
+
+#startButton:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 </style>
 </head>
 <body>
 <div class="frame-container">
     <div class="frame-4-3">
-        <button class="audio-control" id="audioControl">🔇</button>
         <div class="content-wrapper">
             <div class="container">
                 <header class="logo">
@@ -337,6 +397,10 @@ body, html {
                     <p>Total: R$ <span id="totalPrice">0,00</span></p>
                     <button id="sendOrder" class="btn">ENVIAR PEDIDO</button>
                 </aside>
+                
+                <div class="bot-gif">
+                    <img src="https://edypizzariadelivery.github.io/rino.gif" alt="Bot GIF" id="botGif">
+                </div>
             </div>
         </div>
         <div class="icons-box">
@@ -356,26 +420,15 @@ function adjustFrame() {
     const frame = document.querySelector('.frame-4-3');
     const aspectRatio = 4 / 3;
     
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
-    
     let frameWidth, frameHeight;
     
-    if (containerWidth / containerHeight > aspectRatio) {
-        frameHeight = containerHeight;
+    if (container.clientWidth / container.clientHeight > aspectRatio) {
+        frameHeight = container.clientHeight * 0.98;
         frameWidth = frameHeight * aspectRatio;
     } else {
-        frameWidth = containerWidth;
+        frameWidth = container.clientWidth * 0.98;
         frameHeight = frameWidth / aspectRatio;
     }
-    
-    const scale = Math.min(
-        containerWidth / frameWidth,
-        containerHeight / frameHeight
-    );
-    
-    frameWidth *= scale;
-    frameHeight *= scale;
     
     frame.style.width = `${frameWidth}px`;
     frame.style.height = `${frameHeight}px`;
@@ -386,17 +439,38 @@ window.addEventListener('resize', adjustFrame);
 
 let startTime;
 
-let audioEnabled = false;
-const audioControl = document.getElementById('audioControl');
+window.onload = function() {
+    startTime = new Date().getTime();
+    addStartButton();
+}
 
-audioControl.addEventListener('click', function() {
-    audioEnabled = !audioEnabled;
-    audioControl.textContent = audioEnabled ? '🔊' : '🔇';
-    if (audioEnabled) {
-        const audio = new Audio('https://edypizzariadelivery.github.io/bv.mp3');
-        audio.play().catch(error => console.log('Audio play failed:', error));
+function addStartButton() {
+    const existingOverlay = document.querySelector('.overlay');
+    if (!existingOverlay) {
+        const overlay = document.createElement('div');
+        overlay.className = 'overlay';
+        
+        const startButton = document.createElement('button');
+        startButton.id = 'startButton';
+        startButton.innerText = 'Iniciar Atendimento';
+        startButton.onclick = startInteraction;
+        
+        overlay.appendChild(startButton);
+        document.body.appendChild(overlay);
     }
-});
+}
+
+function startInteraction() {
+    const overlay = document.querySelector('.overlay');
+    if (overlay) {
+        overlay.remove();
+    }
+
+    let welcomeAudio = new Audio('https://edypizzariadelivery.github.io/bv.mp3');
+    welcomeAudio.play();
+
+    addBotMessage("Bem-vindo à Edy Pizzaria! Qual é o seu nome?", "Bem-vindo");
+}
 
 const chatBox = document.getElementById('chatBox');
 const chatInput = document.getElementById('chatInput');
@@ -574,12 +648,10 @@ function addBotMessage(message, gifKey) {
     const messageWithGif = gifUrl ? `<img src="${gifUrl}" alt="GIF" class="bot-gif"> ${message}` : message;
     addMessage(messageWithGif, 'bot-message');
     
-    if (audioEnabled) {
-        const audioFile = botAudios[gifKey];
-        if (audioFile) {
-            const audio = new Audio(audioFile);
-            audio.play().catch(error => console.log('Audio play failed:', error));
-        }
+    const audioFile = botAudios[gifKey];
+    if (audioFile) {
+        const audio = new Audio(audioFile);
+        audio.play().catch(error => console.log('Audio playback failed:', error));
     }
 }
 
@@ -827,10 +899,7 @@ function resetOrder() {
     updateTotalPrice();
     updateGif();
     chatBox.innerHTML = '';
-    addBotMessage("Bem-vindo à Edy Pizzaria! Qual é o seu nome?", "Bem-vindo");
 }
-
-addBotMessage("Bem-vindo à Edy Pizzaria! Qual é o seu nome?", "Bem-vindo");
 
 </script>
 </body>
