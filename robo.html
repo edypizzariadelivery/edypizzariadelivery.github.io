@@ -551,10 +551,11 @@ const botAudios = {
 };
 
 const pizzas = [
+    { name: 'Pizza portuguesa', description: 'Presunto, ervilha, ovos, cebola, mussarela e orégano.', price: 34.99, image: 'https://edypizzariadelivery.github.io/portuguesa.jpg' },
     { name: 'Frango com Catupiry', description: 'Irresistível mistura de frango desfiado com o cremoso catupiry.', price: 34.99, image: 'https://edypizzariadelivery.github.io/frango.webp' },
-    { name: 'Carne Seca', description: 'Saborosa combinação de carne seca desfiada, cebola e catupiry.', price: 39.99, image: 'https://edypizzariadelivery.github.io/carne-seca.webp' },
+    { name: 'Carne Seca', description: 'Saborosa combinação de carne seca desfiada, cebola e catupiry.', price: 34.99, image: 'https://edypizzariadelivery.github.io/carne-seca.webp' },
     { name: 'Calabresa', description: 'Deliciosa pizza coberta com fatias de calabresa, cebola e azeitonas.', price: 34.99, image: 'https://edypizzariadelivery.github.io/calabresa.webp' },
-    { name: 'Lombo canadense', description: 'Irresistível combinação de Lombo canadense, mussarela, cebola, requeijão cremoso.', price: 39.99, image: 'https://edypizzariadelivery.github.io/lombo.jpg' }
+    { name: 'Lombo canadense', description: 'Irresistível combinação de Lombo canadense, mussarela, cebola, requeijão cremoso.', price: 34.99, image: 'https://edypizzariadelivery.github.io/lombo.jpg' }
 ];
 
 let state = {
@@ -573,16 +574,30 @@ const cart = [];
 
 function addToCart(pizza) {
     const existingItem = cart.find(item => item.name === pizza.name && item.size === state.size);
+    let itemPrice = pizza.price;
+
+    // Adiciona R$5 para o tamanho "G" (grande)
+    if (state.size === 'G') {
+        itemPrice += 5;
+    }
+
+    // Adiciona R$3 para a borda recheada
+    if (state.stuffedBorder) {
+        itemPrice += 3;
+    }
+
     if (existingItem) {
         existingItem.quantity++;
     } else {
         cart.push({
             ...pizza,
+            price: itemPrice,
             quantity: 1,
             size: state.size,
             stuffedBorder: state.stuffedBorder
         });
     }
+
     updateCart();
     updateTotalPrice();
     updateGif();
@@ -608,6 +623,10 @@ function updateCart() {
         cartItemsContainer.appendChild(li);
     });
 }
+function selectDeliveryMethod(method) {
+    state.deliveryMethod = method === 'Entrega' ? 'delivery' : 'pickup';
+    updateTotalPrice(); // Atualiza o total após selecionar o método de entrega
+}
 
 function removeFromCart(index) {
     cart.splice(index, 1);
@@ -615,21 +634,21 @@ function removeFromCart(index) {
     updateTotalPrice();
     updateGif();
 }
-
 function updateTotalPrice() {
     state.totalPrice = cart.reduce((total, item) => {
         let itemPrice = item.price;
-        if (item.size === 'G') itemPrice += 5;
-        if (item.stuffedBorder) itemPrice += 3;
         return total + (itemPrice * item.quantity);
     }, 0);
 
+    // Adiciona taxa de entrega de R$3 somente se o método de entrega for "delivery"
     if (state.deliveryMethod === 'delivery') {
         state.totalPrice += 3;
     }
 
     totalPriceElement.textContent = state.totalPrice.toFixed(2);
 }
+
+
 
 function updateGif() {
     const gifs = [
