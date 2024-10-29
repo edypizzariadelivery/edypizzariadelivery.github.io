@@ -913,6 +913,27 @@ function finalizePedido() {
     state.currentStep = 'finished';
     showOptions(['Novo Pedido']);
 }
+let currentAudio = null; // Variável para armazenar o áudio atual
+
+function addBotMessage(message, gifKey) {
+    const gifUrl = botGifs[gifKey] || '';
+    const messageWithGif = gifUrl ? `<img src="${gifUrl}" alt="GIF" class="bot-gif"> ${message}` : message;
+    addMessage(messageWithGif, 'bot-message');
+
+    const audioFile = botAudios[gifKey];
+    if (audioFile) {
+        // Pare o áudio anterior, se houver
+        if (currentAudio) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0; // Reseta o tempo do áudio anterior
+        }
+
+        // Cria um novo áudio e inicia a reprodução
+        currentAudio = new Audio(audioFile);
+        currentAudio.play().catch(error => console.log('Audio playback failed:', error));
+    }
+}
+
 
 function increaseQuantity(index) {
     cart[index].quantity++;
