@@ -401,8 +401,9 @@
     <div id="splash-screen">
         <img src="https://edypizzariadelivery.github.io/logo.jpg" alt="Edy Pizzaria Logo" id="logo">
         <h1>EDY PIZZARIA - DELIVERY</h1>
-        <button class="btn" id="cardapio-btn">📝 | CARDÁPIO</button>
-        <button class="btn" id="game-btn">🎮 | EDY GAME</button>
+        <button class="btn" id="cardapio-btn">📝| CARDÁPIO</button>
+        <button class="btn" id="atendente-btn">🤖| ATENDENTE</button>
+        <button class="btn" id="game-btn">🎮| EDY GAME</button>
     </div>
 
     <div id="video-overlay">
@@ -482,6 +483,7 @@
         const splashScreen = document.getElementById('splash-screen');
         const mainContent = document.getElementById('main-content');
         const cardapioBtn = document.getElementById('cardapio-btn');
+        const atendenteBtn = document.getElementById('atendente-btn');
         const gameBtn = document.getElementById('game-btn');
         const backgroundMusic = document.getElementById('background-music');
         const videoOverlay = document.getElementById('video-overlay');
@@ -514,6 +516,10 @@
         cardapioBtn.addEventListener('click', () => {
             showMainContent();
             playBackgroundMusic();
+        });
+
+        atendenteBtn.addEventListener('click', () => {
+            window.location.href = 'https://edypizzariadelivery.github.io/robo.html';
         });
 
         gameBtn.addEventListener('click', () => {
